@@ -25,5 +25,13 @@ delete_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt)
     retractall(user(ID, Name, Email, Password, Type, CreatedAt)),
     save_users.
 
+get_user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, User) :-
+        user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+        User = user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt).
+
+get_user(ID, Name, Email, Password, Type, _, _, CreatedAt, User) :-
+        user(ID, Name, Email, Password, Type, CreatedAt),
+        User = user(ID, Name, Email, Password, Type, CreatedAt).
+
 exists_user_with_email(Email) :-
-    (user(_, _, Email, _, _, _) ; user(_, _, Email, _, _, _, _, _)).
+    get_user(_, _, Email, _, _, _, _, _, _).

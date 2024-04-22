@@ -1,16 +1,11 @@
 :- consult('../repositories/user_repository.pl').
 
-get_users(ID, Name, Email, Password, UserType, Enrollment, University, CreatedAt, Users) :-
+get_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Users) :-
     findall(
-        user(ID, Name, Email, Password, UserType, Enrollment, University, CreatedAt),
-        (user(ID, Name, Email, Password, UserType, Enrollment, University, CreatedAt) ; 
-         user(ID, Name, Email, Password, UserType, CreatedAt)),
+        User,
+        get_user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, User),
         Users
     ).
-
-get_user(ID, Name, Email, Password, UserType, Enrollment, University, CreatedAt) :-
-        (user(ID, Name, Email, Password, UserType, Enrollment, University, CreatedAt)) ; 
-        (user(ID, Name, Email, Password, UserType, CreatedAt)).
 
 add_user(UserJson, Response) :-
     extract_user_data(UserJson, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),

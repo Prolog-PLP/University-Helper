@@ -1,7 +1,7 @@
 :- consult('../../controllers/user_controller.pl').
-:- debug(user_exists_handler).
+:- debug(get_users_handler).
 
-user_exists_handler(Request) :-
+extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt) :-
     http_parameters(Request, [
         id(ID, [integer, optional(true)]),
         name(Name, [string, optional(true)]),
@@ -11,7 +11,10 @@ user_exists_handler(Request) :-
         enrollment(Enrollment, [string, optional(true)]),
         university(University, [string, optional(true)]),
         createdAt(CreatedAt, [string, optional(true)])
-    ]),
+    ]).
+
+user_exists_handler(Request) :-
+    extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
     get_user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
     reply_json(true), !.
 
@@ -34,16 +37,7 @@ delete_users_handler(Request) :-
     reply_json(Response).
 
 get_users_handler(Request) :-
-    http_parameters(Request, [
-        id(ID, [integer, optional(true)]),
-        name(Name, [string, optional(true)]),
-        email(Email, [string, optional(true)]),
-        password(Password, [string, optional(true)]),
-        type(Type, [string, optional(true), oneof(["student", "administrator", "professor"])]),
-        createdAt(CreatedAt, [string, optional(true)])
-    ]),
-    findall(user(ID, Name, Email, Password, Type, CreatedAt),
-            user(ID, Name, Email, Password, Type, CreatedAt),
-            Users),
+    extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+    get_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Users),
     maplist(user_to_json, Users, UsersJson),
     reply_json(json{users: UsersJson}).
