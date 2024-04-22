@@ -28,10 +28,10 @@ update_user_handler(Request) :-
     update_user(User),
     reply_json(json{success: true}).
 
-delete_user_handler(Request) :-
+delete_users_handler(Request) :-
     http_read_json_dict(Request, User),
-    delete_user(User),
-    reply_json(json{success: true}).
+    delete_users(User, Response),
+    reply_json(Response).
 
 get_users_handler(Request) :-
     http_parameters(Request, [

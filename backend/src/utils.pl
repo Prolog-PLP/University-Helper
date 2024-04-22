@@ -17,7 +17,10 @@ is_empty(_-Value) :-
 all_empty([Head | Tail]) :- is_empty(Head), all_empty(Tail).
 
 json_member(Json, Key, Value) :-
-    get_dict(Key, Json, Value).
+    ( get_dict(Key, Json, Value)
+    -> true
+    ; Value = _
+    ).
 
 create_json_from_list([], json{}).
 create_json_from_list(Pairs, Json) :-
@@ -95,3 +98,13 @@ get_current_year(Year) :-
     get_time(Timestamp),
     stamp_date_time(Timestamp, DateTime, local),
     date_time_value(year, DateTime, Year).
+
+extract_user_data(UserJson, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt) :-
+    json_member(UserJson, id, ID),
+    json_member(UserJson, name, Name),
+    json_member(UserJson, email, Email),
+    json_member(UserJson, password, Password),
+    json_member(UserJson, type, Type),
+    json_member(UserJson, enrollment, Enrollment),
+    json_member(UserJson, university, University),
+    json_member(UserJson, createdAt, CreatedAt).
