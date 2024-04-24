@@ -13,9 +13,10 @@ save_users :-
     told.
 
 add_user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt) :-
-    ( (\+ (Enrollment = _ ; University = _))
+    ( nonvar(Enrollment), nonvar(University)
     -> assertz(user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt))
-    ;  assertz(user(ID, Name, Email, Password, Type, CreatedAt))),
+    ;  assertz(user(ID, Name, Email, Password, Type, CreatedAt))
+    ),
     retract(current_user_id(_)), 
     assertz(current_user_id(ID)),
     save_users.
@@ -42,19 +43,27 @@ delete_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt)
     save_users.
 
 get_user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, User) :-
-        user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
-        User = user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt), !.
-
-get_user(ID, Name, Email, Password, Type, _, _, CreatedAt, User) :-
-        user(ID, Name, Email, Password, Type, CreatedAt),
-        User = user(ID, Name, Email, Password, Type, CreatedAt).
+        (   user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt)
+        ->  User = user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt)
+        ;   user(ID, Name, Email, Password, Type, CreatedAt),
+            User = user(ID, Name, Email, Password, Type, CreatedAt)
+        ).
 
 get_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Users) :-
     findall(
-        User,
-        get_user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, User),
-        Users
-    ).
+        user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+        user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+        Users8
+    ),
+    (   (var(University), var(Enrollment))
+    ->  findall(
+            user(ID, Name, Email, Password, Type, CreatedAt),
+            user(ID, Name, Email, Password, Type, CreatedAt),
+            Users6
+        )
+    ;   true
+    ),
+    append(Users6, Users8, Users).
 
 exists_user_with_email(Email) :-
     get_user(_, _, Email, _, _, _, _, _, _).

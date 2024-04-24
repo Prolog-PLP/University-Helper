@@ -1,7 +1,10 @@
 :- use_module(library(date)).
 
-user_to_json(user(ID, Name, Email, Password, Type, Enrollment),
-             json{id: ID, name: Name, email: Email, password: Password, type: Type, enrollment: Enrollment}).
+user_to_json(user(ID, Name, Email, Password, Type, CreatedAt),
+             json{id: ID, name: Name, email: Email, password: Password, type: Type, createdAt: CreatedAt}) :- !.
+
+user_to_json(user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+             json{id: ID, name: Name, email: Email, password: Password, type: Type, enrollment: Enrollment, university: University, createdAt: CreatedAt}).
 
 database_path('backend/database/').
 
