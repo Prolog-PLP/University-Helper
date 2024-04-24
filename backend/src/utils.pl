@@ -108,3 +108,9 @@ extract_user_data(UserJson, ID, Name, Email, Password, Type, Enrollment, Univers
     json_member(UserJson, enrollment, Enrollment),
     json_member(UserJson, university, University),
     json_member(UserJson, createdAt, CreatedAt).
+
+unify_if_uninstantiated(PossiblyUninstantiatedVar, ValueToUnify) :-
+    var(PossiblyUninstantiatedVar),
+    PossiblyUninstantiatedVar = ValueToUnify, !.
+
+unify_if_uninstantiated(_, _).

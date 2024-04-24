@@ -1,5 +1,4 @@
 :- consult('../../controllers/user_controller.pl').
-:- debug(get_users_handler).
 
 extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt) :-
     http_parameters(Request, [
@@ -15,7 +14,7 @@ extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, Univer
 
 user_exists_handler(Request) :-
     extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
-    get_user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+    get_user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, _),
     reply_json(true), !.
 
 user_exists_handler(_) :-
@@ -26,14 +25,15 @@ add_user_handler(Request) :-
     add_user(User, Response),
     reply_json(Response).
 
-update_user_handler(Request) :-
+update_user_handler(ID, Request) :-
+    atom_number(ID, UID),
     http_read_json_dict(Request, User),
-    update_user(User),
-    reply_json(json{success: true}).
+    update_user(UID, User, Response),
+    reply_json(Response).
 
 delete_users_handler(Request) :-
-    http_read_json_dict(Request, User),
-    delete_users(User, Response),
+    extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+    delete_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Response),
     reply_json(Response).
 
 get_users_handler(Request) :-
