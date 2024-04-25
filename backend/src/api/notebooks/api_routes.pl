@@ -1,0 +1,1 @@
+:- consult('api_functions.pl').
