@@ -112,6 +112,17 @@ extract_user_data(UserJson, ID, Name, Email, Password, Type, Enrollment, Univers
     json_member(UserJson, university, University),
     json_member(UserJson, createdAt, CreatedAt).
 
+extract_note_data(NoteJson, ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt) :-
+    json_member(NoteJson, id, ID),
+    json_member(NoteJson, type, Type),
+    json_member(NoteJson, visibility, Visibility),
+    json_member(NoteJson, title, Title),
+    json_member(NoteJson, subject, Subject),
+    json_member(NoteJson, content, Content),
+    json_member(NoteJson, creatorID, CreatorID),
+    json_member(NoteJson, createdAt, CreatedAt),
+    json_member(NoteJson, updatedAt, UpdatedAt).
+
 unify_if_uninstantiated(PossiblyUninstantiatedVar, ValueToUnify) :-
     var(PossiblyUninstantiatedVar),
     PossiblyUninstantiatedVar = ValueToUnify, !.
