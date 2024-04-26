@@ -64,7 +64,16 @@ get_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Us
         )
     ;   true
     ),
-    append(Users6, Users8, Users).
+    get_users_to_validate(ToValidateUser),
+    exclude(users_to_validate8(ToValidateUser), Users8, FilteredUsers8),
+    exclude(users_to_validate6(ToValidateUser), Users6, FilteredUsers6),
+    append(FilteredUsers6, FilteredUsers8, Users).
+
+users_to_validate6(IdsValidation, user(Id, _, _, _, _, _)) :-
+    member(Id, IdsValidation).
+
+users_to_validate8(IdsValidation, user(Id, _, _, _, _, _, _, _)) :-
+    member(Id, IdsValidation).
 
 exists_user_with_email(Email) :-
     get_user(_, _, Email, _, _, _, _, _, _).

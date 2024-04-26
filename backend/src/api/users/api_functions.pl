@@ -41,3 +41,10 @@ get_users_handler(Request) :-
     get_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Users),
     maplist(user_to_json, Users, UsersJson),
     reply_json(json{users: UsersJson}).
+
+
+to_validate_users_handler(_) :-
+    get_users_to_validate(Users),
+    maplist(user_val_to_json, Users, UsersJson),
+    reply_json(json{users: UsersJson}).
+    
