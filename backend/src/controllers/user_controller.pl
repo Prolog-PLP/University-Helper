@@ -1,5 +1,6 @@
 :- consult('../repositories/user_repository.pl').
 :- consult('../repositories/user_validation_repository.pl').
+:- consult('../repositories/user_warning_repository.pl').
 
 add_user(UserJson, Response) :-
     extract_user_data(UserJson, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),

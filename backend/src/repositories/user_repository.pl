@@ -77,7 +77,3 @@ users_to_validate8(IdsValidation, user(Id, _, _, _, _, _, _, _)) :-
 
 exists_user_with_email(Email) :-
     get_user(_, _, Email, _, _, _, _, _, _).
-
-notify_user_repo(WarningID, WarnedUser) :-
-    assertz(user_warnings(WarningID, WarnedUser)),
-    save_user_warnings.
