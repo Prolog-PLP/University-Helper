@@ -11,24 +11,20 @@ add_user(UserJson, Response) :-
     
     ( (is_empty(Errors), (\+ get_user(_, _, Email, _, _, _, _, _, _)))
     ->  ((Type = "professor") 
-        -> 
-            add_user_val_aux(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
-            Response = json{success: true, message: 'Waiting ADMIN validation for this User'}
-        ; 
-            add_user_aux(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
-            current_user_id(CurrentID),
-            format(atom(Message), 'Created user with ID ~w successfully.', [CurrentID]),
-            Response = json{success: true, id: CurrentID, message: Message} 
-        )
+        ->  add_user_val_aux(ID)
+        ; true
+        ),
+        add_user_aux(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+        current_user_id(CurrentID),
+        format(atom(Message), 'Created user with ID ~w successfully.', [CurrentID]),
+        Response = json{success: true, id: CurrentID, message: Message} 
     ;
         Response = json{success: false, errors: Errors, message: 'Failed to create user.'}
     ).
 
-add_user_val_aux(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt) :-
-    next_user_validation_id(ID),
-    get_time(CurrentTime),
-    format_time(atom(CreatedAt), '%d-%m-%Y %H:%M:%S', CurrentTime),
-    add_user_val(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt).
+add_user_val_aux(ID) :-
+    next_user_id(ID),
+    add_user_val(ID).
 
 add_user_aux(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt) :-
     next_user_id(ID),
