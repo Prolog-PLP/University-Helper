@@ -3,22 +3,28 @@
 add_note(NoteJson, Response) :-
     extract_note_data(NoteJson, ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
     % place holder validate
-    validate(Title, [has_alpha, has_alpha_or_ws_only], TitleErrors),
-    create_json_from_list([title-TitleErrors], is_empty, Errors),
-    create_json_from_list(is_empty, Errors),
-    (   (is_empty(Errors), (\+ get_note(ID, _, _, _, _, _, _, _, _)))
+    %validate(Title, [], TitleErrors),
+    %create_json_from_list([title-TitleErrors], is_empty, Errors),
+    %create_json_from_list(is_empty, Errors),
+    (   ((\+ get_note(ID, _, _, _, _, _, _, _, _, _)))
     ->  
         add_note_aux(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
-        % TODO
-        current_note_id(CurrentID),
+        id_type(Type, IdType),
+        current_note_id(IdType, CurrentID),
         format(atom(Message), 'Created note with ID ~w successfully.', [CurrentID]),
         Response = json{success: true, id: CurrentID, message: Message}
     ;
-        Response = json{success: false, errors: Errors, message: 'Failed to create note.'}
+        Response = json{success: false, errors: "Errors", message: 'Failed to create note.'}
     ).
 
+id_type("Warning", war).
+id_type("PlainText", plt).
+id_type("Reminder", rem).
+id_type(_, _).
+
 add_note_aux(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt) :-
-    next_note_id(ID),
+    id_type(Type, IdType),
+    next_note_id(IdType, ID),
     get_time(CurrentTime),
     format_time(atom(CreatedAt), '%d-%m-%Y %H:%M:%S', CurrentTime),
     add_note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt).
@@ -31,8 +37,9 @@ delete_notes(_, _, _, _, _, _, _, _, _, Response) :-
     Response = json{success: false, errors: json{json: "No such user in database."}, message: 'Failed to delete note.'}.
 
 update_note(ID, UpdatedNoteJson, Response) :-
-    extract_note_data(UpdatedNoteJson, _, _, Visibility, Title, Subject, Content, _, _, _),
-    update_note(ID, Type, Visibility, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
+    % I'm supposing that the Type will be inside the json
+    extract_note_data(UpdatedNoteJson, _, Type, Visibility, Title, Subject, Content, _, _, UpdatedAt),
+    update_note(ID, Type, Visibility, Title, Subject, Content, _, _, UpdatedAt),
     Response = json{success: true, message: 'Updated note(s) successfully.'}.
 
 update_note(_, _, Response) :-

@@ -7,7 +7,7 @@ user_to_json(user(ID, Name, Email, Password, Type, Enrollment, University, Creat
              json{id: ID, name: Name, email: Email, password: Password, type: Type, enrollment: Enrollment, university: University, createdAt: CreatedAt}).
 
 note_to_json(note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
-             json{id: ID, type: Type, title: Title, visibility:Visibility, subject: Subject, content: Content, creatorID: CreatorID, createdAt: CreatedAt, updatedAt: UpdatedAt}).
+json{id: ID, type: Type, visibility:Visibility, title: Title, subject: Subject, content: Content, creatorID: CreatorID, createdAt: CreatedAt, updatedAt: UpdatedAt}).
 
 database_path('backend/database/').
 

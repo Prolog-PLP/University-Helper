@@ -14,14 +14,14 @@ save_notes :-
 
 add_note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt) :-
     assertz(note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt)),
-    retract(current_note_id(_)), 
-    assertz(current_note_id(ID)),
+    id_type(Type, IdType),
+    retract(current_note_id(IdType, _)), 
+    assertz(current_note_id(IdType, ID)),
     save_notes.
 
-delete_notes(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt) :-
+delete_notes(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt) :-
     retractall(note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt)),
     save_notes.
-
 
 % Reminder
 % Warning
@@ -29,7 +29,7 @@ delete_notes(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt)
 % Tamo aqui
 get_note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt, Note) :-
         (   note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt)
-        ->  Note = note(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt)
+        ->  Note = note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt)
         ).
 
 get_notes(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt, Notes) :-
@@ -39,9 +39,9 @@ get_notes(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, U
         Notes
     ).
 
-update_note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt) :-
-    retract(note(ID, OldType, OldVisibility, OldTitle, OldSubject, OldContent, OldCreatorID, OldCreatedAt, OldUpdatedAt)),
-    maplist(unify_if_uninstantiated, [Visibility, Title, Subject, Content], 
-                                    [OldVisibility, OldTitle, OldSubject, OldContent]),
-    assertz(note(ID, OldType, Visibility, Title, Subject, Content, OldCreatorID, OldCreatedAt, OldUpdatedAt)),
+update_note(ID, Type, Visibility, Title, Subject, Content, _, _, UpdatedAt) :-
+    retract(note(ID, Type, OldVisibility, OldTitle, OldSubject, OldContent, OldCreatorID, OldCreatedAt, OldUpdatedAt)),
+    maplist(unify_if_uninstantiated, [Visibility, Title, Subject, Content, UpdatedAt], 
+                                    [OldVisibility, OldTitle, OldSubject, OldContent, OldUpdatedAt]),
+    assertz(note(ID, Type, Visibility, Title, Subject, Content, OldCreatorID, OldCreatedAt, UpdatedAt)),
     save_notes.
