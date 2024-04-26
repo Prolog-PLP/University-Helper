@@ -46,3 +46,9 @@ notify_user_handler(Request) :-
     http_read_json_dict(Request, NotifyUserWarning),
     notify_user(NotifyUserWarning, Response),
     reply_json(Response).
+
+to_validate_users_handler(_) :-
+    get_users_to_validate(Users),
+    maplist(user_val_to_json, Users, UsersJson),
+    reply_json(json{users: UsersJson}).
+    

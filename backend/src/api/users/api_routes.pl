@@ -8,3 +8,4 @@ http:location(users, api(users), []).
 :- http_handler(users(delete), delete_users_handler, [method(delete)]).
 :- http_handler(users(update/ID), update_user_handler(ID), [method(patch)]).
 :- http_handler(users(notifyUser), notify_user_handler, [method(post)]).
+:- http_handler(users(to_validate), to_validate_users_handler, [method(get)]).

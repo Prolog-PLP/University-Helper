@@ -20,3 +20,19 @@ add_user_val(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt)
     retract(user_validation_id(_)), 
     assertz(user_validation_id(ID)),
     save_users_val.
+
+get_users_to_validate(Users) :-
+    findall(
+        user_val(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+        user_val(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+        Users8
+    ),
+    (   (var(University), var(Enrollment))
+        ->  findall(
+                user_val(ID, Name, Email, Password, Type, CreatedAt),
+                user_val(ID, Name, Email, Password, Type, CreatedAt),
+                Users6
+            )
+        ;   true
+    ),
+    append(Users6, Users8, Users).
