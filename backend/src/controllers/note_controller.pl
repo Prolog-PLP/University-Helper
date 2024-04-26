@@ -3,10 +3,9 @@
 add_note(NoteJson, Response) :-
     extract_note_data(NoteJson, ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
     % place holder validate
-    %validate(Title, [], TitleErrors),
-    %create_json_from_list([title-TitleErrors], is_empty, Errors),
-    %create_json_from_list(is_empty, Errors),
-    (   ((\+ get_note(ID, _, _, _, _, _, _, _, _, _)))
+    validate(Title, [], TitleErrors),
+    create_json_from_list([title-TitleErrors], is_empty, Errors),
+    (   (is_empty(Errors))
     ->  
         add_note_aux(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
         id_type(Type, IdType),
@@ -14,7 +13,7 @@ add_note(NoteJson, Response) :-
         format(atom(Message), 'Created note with ID ~w successfully.', [CurrentID]),
         Response = json{success: true, id: CurrentID, message: Message}
     ;
-        Response = json{success: false, errors: "Errors", message: 'Failed to create note.'}
+        Response = json{success: false, errors: Errors, message: 'Failed to create note.'}
     ).
 
 id_type("Warning", war).
