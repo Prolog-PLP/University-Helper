@@ -1,4 +1,5 @@
 :- consult('../repositories/user_repository.pl').
+:- consult('../repositories/user_validation_repository.pl').
 
 add_user(UserJson, Response) :-
     extract_user_data(UserJson, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
@@ -7,15 +8,27 @@ add_user(UserJson, Response) :-
     validate(Password, [len_not_less_than(8)], PasswordErrors),
     validate(Type, [is_valid_user_type], TypeErrors),
     create_json_from_list([name-NameErrors, email-EmailErrors, password-PasswordErrors, type-TypeErrors], is_empty, Errors),
-    (   (is_empty(Errors), (\+ get_user(_, _, Email, _, _, _, _, _, _)))
-    ->  
-        add_user_aux(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
-        current_user_id(CurrentID),
-        format(atom(Message), 'Created user with ID ~w successfully.', [CurrentID]),
-        Response = json{success: true, id: CurrentID, message: Message}
+    
+    ( (is_empty(Errors), (\+ get_user(_, _, Email, _, _, _, _, _, _)))
+    ->  ((Type = "professor") 
+        -> 
+            add_user_val_aux(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+            Response = json{success: true, message: 'Waiting ADMIN validation for this User'}
+        ; 
+            add_user_aux(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+            current_user_id(CurrentID),
+            format(atom(Message), 'Created user with ID ~w successfully.', [CurrentID]),
+            Response = json{success: true, id: CurrentID, message: Message} 
+        )
     ;
         Response = json{success: false, errors: Errors, message: 'Failed to create user.'}
     ).
+
+add_user_val_aux(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt) :-
+    next_user_validation_id(ID),
+    get_time(CurrentTime),
+    format_time(atom(CreatedAt), '%d-%m-%Y %H:%M:%S', CurrentTime),
+    add_user_val(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt).
 
 add_user_aux(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt) :-
     next_user_id(ID),
