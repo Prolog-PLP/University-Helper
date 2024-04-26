@@ -41,8 +41,3 @@ get_users_handler(Request) :-
     get_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Users),
     maplist(user_to_json, Users, UsersJson),
     reply_json(json{users: UsersJson}).
-
-notify_user_handler(Request) :-
-    http_read_json_dict(Request, NotifyUserWarning),
-    notify_user(NotifyUserWarning, Response),
-    reply_json(Response).

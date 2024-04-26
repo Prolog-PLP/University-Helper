@@ -71,4 +71,4 @@ exists_user_with_email(Email) :-
 
 notify_user_repo(WarningID, WarnedUser) :-
     assertz(user_warnings(WarningID, WarnedUser)),
-    save_users.
+    save_user_warnings.
