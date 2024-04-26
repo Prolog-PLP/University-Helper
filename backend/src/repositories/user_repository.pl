@@ -8,6 +8,7 @@ save_users :-
     concat_paths(BasePath, 'users.pl', File),
     tell(File),
     listing(user),
+    listing(user_warnings),
     listing(current_user_id),
     listing(next_user_id),
     told.
@@ -67,3 +68,7 @@ get_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Us
 
 exists_user_with_email(Email) :-
     get_user(_, _, Email, _, _, _, _, _, _).
+
+notify_user_repo(WarningID, WarnedUser) :-
+    assertz(user_warnings(WarningID, WarnedUser)),
+    save_users.

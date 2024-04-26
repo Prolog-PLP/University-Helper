@@ -126,6 +126,10 @@ extract_note_data(NoteJson, ID, Type, Visibility, Title, Subject, Content, Creat
     json_member(NoteJson, createdAt, CreatedAt),
     json_member(NoteJson, updatedAt, UpdatedAt).
 
+extract_notify_user_data(NotifyUserWarningJson, WarningID, WarnedUser) :-
+    json_member(NotifyUserWarningJson, warningID, WarningID),
+    json_member(NotifyUserWarningJson, warnedUser, WarnedUser).
+
 unify_if_uninstantiated(PossiblyUninstantiatedVar, ValueToUnify) :-
     var(PossiblyUninstantiatedVar),
     PossiblyUninstantiatedVar = ValueToUnify, !.
