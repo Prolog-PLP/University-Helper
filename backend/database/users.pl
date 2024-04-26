@@ -7,7 +7,6 @@ user(1, "Everton", "everton@admin.ufcg.edu.br", "senhasegura", "administrator", 
 
 :- dynamic user_warnings/2.
 
-user_warnings(1, 1).
 
 :- dynamic current_user_id/1.
 
