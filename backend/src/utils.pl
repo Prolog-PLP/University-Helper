@@ -6,6 +6,12 @@ user_to_json(user(ID, Name, Email, Password, Type, CreatedAt),
 user_to_json(user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
              json{id: ID, name: Name, email: Email, password: Password, type: Type, enrollment: Enrollment, university: University, createdAt: CreatedAt}).
 
+note_to_json(note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
+json{id: ID, type: Type, visibility:Visibility, title: Title, subject: Subject, content: Content, creatorID: CreatorID, createdAt: CreatedAt, updatedAt: UpdatedAt}).
+
+user_warnings_to_json(user_warning(WarningID, WarnedUser),
+json{warningID: WarningID, warnedUser: WarnedUser}).
+
 database_path('backend/database/').
 
 concat_paths(BasePath, PathToConcat, Result) :-
@@ -111,6 +117,21 @@ extract_user_data(UserJson, ID, Name, Email, Password, Type, Enrollment, Univers
     json_member(UserJson, enrollment, Enrollment),
     json_member(UserJson, university, University),
     json_member(UserJson, createdAt, CreatedAt).
+
+extract_note_data(NoteJson, ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt) :-
+    json_member(NoteJson, id, ID),
+    json_member(NoteJson, type, Type),
+    json_member(NoteJson, visibility, Visibility),
+    json_member(NoteJson, title, Title),
+    json_member(NoteJson, subject, Subject),
+    json_member(NoteJson, content, Content),
+    json_member(NoteJson, creatorID, CreatorID),
+    json_member(NoteJson, createdAt, CreatedAt),
+    json_member(NoteJson, updatedAt, UpdatedAt).
+
+extract_notify_user_data(NotifyUserWarningJson, WarningID, WarnedUser) :-
+    json_member(NotifyUserWarningJson, warningID, WarningID),
+    json_member(NotifyUserWarningJson, warnedUser, WarnedUser).
 
 unify_if_uninstantiated(PossiblyUninstantiatedVar, ValueToUnify) :-
     var(PossiblyUninstantiatedVar),
