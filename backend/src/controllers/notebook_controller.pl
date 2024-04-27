@@ -1,4 +1,4 @@
-:- consult('../repositories/notebook_repository.pl').:- consult('../repositories/notebook_repository.pl').
+:- consult('../repositories/notebook_repository.pl').
 
 add_notebook(NotebookJson, Response) :-
     extract_notebook_data(NotebookJson, ID, Type, Name),
