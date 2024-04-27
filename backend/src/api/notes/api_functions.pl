@@ -1,4 +1,3 @@
-:- consult('../../controllers/note_controller.pl').
 :- consult('../../controllers/user_controller.pl').
 
 extract_note_params(Request, ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt) :-

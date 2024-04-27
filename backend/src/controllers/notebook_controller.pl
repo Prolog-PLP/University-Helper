@@ -1,0 +1,1 @@
+:- consult('../repositories/notebook_repository.pl').
