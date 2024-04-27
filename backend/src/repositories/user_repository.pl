@@ -54,26 +54,40 @@ get_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Us
     findall(
         user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
         user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
-        Users8
-    ),
-    (   (var(University), var(Enrollment))
-    ->  findall(
-            user(ID, Name, Email, Password, Type, CreatedAt),
-            user(ID, Name, Email, Password, Type, CreatedAt),
-            Users6
-        )
-    ;   true
-    ),
-    get_users_to_validate(ToValidateUser),
-    exclude(users_to_validate8(ToValidateUser), Users8, FilteredUsers8),
-    exclude(users_to_validate6(ToValidateUser), Users6, FilteredUsers6),
+        Users
+    ).
+
+get_users(ID, Name, Email, Password, Type, CreatedAt, Users) :-
+    findall(
+        user(ID, Name, Email, Password, Type, CreatedAt),
+        user(ID, Name, Email, Password, Type, CreatedAt),
+        Users
+    ).
+
+get_all_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Users) :-
+    get_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Users8),
+    get_users(ID, Name, Email, Password, Type, CreatedAt, Users6),
+    append(Users8, Users6, Users).
+
+get_validated_or_not_users(Users, Bool) :-
+    get_users(_, _, _, _, _, _, _, _, Users8),
+    get_users(_, _, _, _, _, _, Users6),
+    get_ids_to_validate(ToValidateUser),
+    exclude(users_to_validate(ToValidateUser, Bool), Users8, FilteredUsers8),
+    exclude(users_to_validate(ToValidateUser, Bool), Users6, FilteredUsers6),
     append(FilteredUsers6, FilteredUsers8, Users).
 
-users_to_validate6(IdsValidation, user(Id, _, _, _, _, _)) :-
-    member(Id, IdsValidation).
+users_to_validate(IdsValidation, Bool, user(Id, _, _, _, _, _)) :-
+    ( (Bool) 
+        -> member(Id, IdsValidation)
+        ; (\+ member(Id, IdsValidation))
+    ).
 
-users_to_validate8(IdsValidation, user(Id, _, _, _, _, _, _, _)) :-
-    member(Id, IdsValidation).
+users_to_validate(IdsValidation, Bool, user(Id, _, _, _, _, _, _, _)) :-
+    ( (Bool) 
+        -> member(Id, IdsValidation)
+        ; (\+ member(Id, IdsValidation))
+    ).
 
 exists_user_with_email(Email) :-
     get_user(_, _, Email, _, _, _, _, _, _).

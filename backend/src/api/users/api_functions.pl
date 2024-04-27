@@ -36,12 +36,31 @@ delete_users_handler(Request) :-
     delete_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Response),
     reply_json(Response).
 
+validate_user_handler(ID, _) :-
+    atom_number(ID, UID),
+    remove_validation(UID).
+
+unvalidate_user_handler(Request) :-
+    extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+    remove_validation(ID),
+    delete_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Response),
+    reply_json(Response).
+
 get_users_handler(Request) :-
     extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
-    get_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Users),
+    get_all_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Users),
     maplist(user_to_json, Users, UsersJson),
     reply_json(json{users: UsersJson}).
 
+get_validated_users_handler(_) :-
+    get_validated_or_not_users(Users, true),
+    maplist(user_to_json, Users, UsersJson),
+    reply_json(json{users: UsersJson}).
+
+get_unvalidated_users_handler(_) :-
+    get_validated_or_not_users(Users, false),
+    maplist(user_to_json, Users, UsersJson),
+    reply_json(json{users: UsersJson}).
 
 to_validate_users_handler(_) :-
     get_users_to_validate(Users),
