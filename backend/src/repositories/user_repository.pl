@@ -8,7 +8,6 @@ save_users :-
     concat_paths(BasePath, 'users.pl', File),
     tell(File),
     listing(user),
-    listing(user_warnings),
     listing(current_user_id),
     listing(next_user_id),
     told.

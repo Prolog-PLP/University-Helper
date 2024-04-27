@@ -23,10 +23,6 @@ delete_notes(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt
     retractall(note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt)),
     save_notes.
 
-% Reminder
-% Warning
-% Text
-% Tamo aqui
 get_note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt, Note) :-
         (   note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt)
         ->  Note = note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt)

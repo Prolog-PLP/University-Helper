@@ -9,6 +9,9 @@ user_to_json(user(ID, Name, Email, Password, Type, Enrollment, University, Creat
 note_to_json(note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
 json{id: ID, type: Type, visibility:Visibility, title: Title, subject: Subject, content: Content, creatorID: CreatorID, createdAt: CreatedAt, updatedAt: UpdatedAt}).
 
+user_warnings_to_json(user_warning(WarningID, WarnedUser),
+json{warningID: WarningID, warnedUser: WarnedUser}).
+
 database_path('backend/database/').
 
 concat_paths(BasePath, PathToConcat, Result) :-

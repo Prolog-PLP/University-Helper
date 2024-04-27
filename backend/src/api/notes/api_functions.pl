@@ -14,6 +14,12 @@ extract_note_params(Request, ID, Type, Visibility, Title, Subject, Content, Crea
         updatedAt(UpdatedAt, [string, optional(true)])
     ]).
 
+extract_user_warning_params(Request, WarningID, WarnedUser) :-
+    http_parameters(Request, [
+        warningID(WarningID, [integer, optional(true)]),
+        warnedUser(WarnedUser, [integer, optional(true)])
+    ]).
+
 add_note_handler(Request) :-
     http_read_json_dict(Request, Note),
     add_note(Note, Response),
@@ -41,3 +47,9 @@ notify_user_handler(Request) :-
     http_read_json_dict(Request, NotifyUserWarning),
     notify_user(NotifyUserWarning, Response),
     reply_json(Response).
+
+user_notifications_handler(Request) :-
+    extract_user_warning_params(Request, WarningID, WarnedUser),
+    get_user_warnings(WarningID, WarnedUser, UserWarnings),
+    maplist(user_warnings_to_json, UserWarnings, UserWarningsJson),
+    reply_json(json{user_warnings: UserWarningsJson}).
