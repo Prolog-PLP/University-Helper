@@ -20,6 +20,12 @@ export const useApi = () => ({
   getDBUsers: async () => {
     return await userService.getDBUsers();
   },
+  getValidUsers: async () => {
+    return await userService.getValidUsers();
+  },
+  getUnvalidUsers: async () => {
+    return await userService.getUnvalidUsers();
+  },
   updateUserField: async (data) => {
     return await userService.updateUserField(data);
   },

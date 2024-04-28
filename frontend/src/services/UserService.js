@@ -5,7 +5,10 @@ const usersValidateRoute = apiUsersURL + "/validate"
 const validateRoute = (toValidate) => { return usersValidateRoute + capitalize(toValidate); };
 const isRegisteredRoute = apiUsersURL + "/isRegistered";
 const registerRoute = apiUsersURL + "/register";
-const dbUsersRoute = apiUsersURL + "/usersDB";
+// this route has changed
+const dbUsersRoute = apiUsersURL + "/";
+const getValidUsers = apiUsersURL + "/validated_users";
+const getUnvalidUsers = apiUsersURL + "/unvalidated_users";
 const updateUserRoute = apiUsersURL + "/updateAny";
 const getUserFieldRoute = apiUsersURL + "/getAny";
 const getUserByFieldRoute = apiUsersURL + "/user";
@@ -69,6 +72,7 @@ export default class UserService {
         });
     }
 
+    // get users 
     async getDBUsers() {
         const response = await fetch(dbUsersRoute, {
             method: 'GET',
@@ -83,6 +87,39 @@ export default class UserService {
 
         return await response.json();
     }
+
+    // already valid users
+    async getValidUsers() {
+        const response = await fetch(getValidUsers, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch users.');
+        }
+
+        return await response.json();
+    }
+
+    // users that are waiting to be validated
+    async getUnvalidUsers() {
+        const response = await fetch(getUnvalidUsers, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch users.');
+        }
+
+        return await response.json();
+    }
+    
 
     async updateUserField(data) {
         const response = await fetch(updateUserRoute, {
