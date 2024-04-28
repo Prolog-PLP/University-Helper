@@ -68,7 +68,7 @@ export default class NoteService {
   }
 
   async getNotesByCreatorId(userId) {
-    const response = await fetch('http://localhost:8081/api/notes/notes', {
+    const response = await fetch('http://localhost:8000/api/notes/notes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

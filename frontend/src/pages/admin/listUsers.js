@@ -30,7 +30,7 @@ const ListUsers = () => {
   };
 
   const setValidates = (activeUsers) => {
-    fetch('http://localhost:8081/api/users/getIdsValidated', {
+    fetch('http://localhost:8000/api/users/getIdsValidated', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ const ListUsers = () => {
 
 
   const handleDeleteRow = (dbUserId) => {
-    fetch('http://localhost:8081/api/users/deleteUser', {
+    fetch('http://localhost:8000/api/users/deleteUser', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -162,7 +162,7 @@ const ListUsers = () => {
           return (
             <Button
               onClick={() => {
-                fetch('http://localhost:8081/api/users/validateUser', {
+                fetch('http://localhost:8000/api/users/validateUser', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
