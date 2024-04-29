@@ -13,9 +13,8 @@ add_notebook_handler(Request) :-
     add_notebook(Notebook, Response),
     reply_json(Response).
 
-get_notebooks_handler(Request) :-
-    extract_notebook_params(Request, ID, Type, Name),
-    get_notebooks(ID, Type, Name, Notebooks),
+get_notebooks_handler(_):-
+    find_all_notebooks(Notebooks),
     maplist(notebook_to_json, Notebooks, NotebooksJson),
     reply_json(NotebooksJson).
 

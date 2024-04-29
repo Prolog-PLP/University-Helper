@@ -138,6 +138,9 @@ extract_notebook_data(NotebookJson, ID, Type, Name) :-
     json_member(NotebookJson, type, Type),
     json_member(NotebookJson, name, Name).
 
+notebook_to_json(Notebook, Json) :-
+    Json = json{ id: Notebook.id, type: Notebook.type, name: Notebook.name }.
+
 unify_if_uninstantiated(PossiblyUninstantiatedVar, ValueToUnify) :-
     var(PossiblyUninstantiatedVar),
     PossiblyUninstantiatedVar = ValueToUnify, !.
