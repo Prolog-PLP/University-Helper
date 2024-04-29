@@ -1,20 +1,27 @@
 :- consult('../../controllers/notebook_controller.pl').
 
-extract_notebook_params(Request, ID, Type, Name) :-
+extract_notebook_params(Request, ID, Type, Name, ExtraData) :-
     http_parameters(Request, [
         id(ID, [integer, optional(true)]),
         type(Type, [string, optional(true)]),
-        name(Name, [string, optional(true)])
-        % add here the rest of the params that you want, and remember to put the rest that the notebooks needs
-    ]).
+        name(Name, [string, optional(true)]),
+        subjectsPages(SubjectsPages, [list(string), optional(true)]),
+        hasPages(HasPages, [boolean, optional(true)]),
+        keywords(Keywords, [list(string), optional(true)])
+    ]),
+    ExtraData = notebook_extra_data{subjectsPages: SubjectsPages, hasPages: HasPages, keywords: Keywords},
+    format("ID: ~w, Type: ~w, Name: ~w, ExtraData: ~w~n", [ID, Type, Name, ExtraData]).
+
 
 add_notebook_handler(Request) :-
     http_read_json_dict(Request, Notebook),
-    add_notebook(Notebook, Response),
+    extract_notebook_params(Request, ID, Type, Name, ExtraData),
+    add_notebook(ID, Type, Name, ExtraData, Response), 
     reply_json(Response).
 
-get_notebooks_handler(_):-
-    find_all_notebooks(Notebooks),
+get_notebooks_handler(Request) :-
+    extract_notebook_params(Request, ID, Type, Name),
+    filter_notebooks(ID, Type, Name, Notebooks),
     maplist(notebook_to_json, Notebooks, NotebooksJson),
     reply_json(NotebooksJson).
 
@@ -24,7 +31,5 @@ update_notebook_handler(ID, Request) :-
     update_notebook(UID, Notebook, Response),
     reply_json(Response).
 
-delete_notebook_handler(Request) :-
-    extract_notebook_params(Request, ID, Type, Name),
-    delete_notebook(ID, Type, Name, Response),
-    reply_json(Response).
+delete_notebook_api_handler(Request) :-
+    delete_notebook_handler(Request).

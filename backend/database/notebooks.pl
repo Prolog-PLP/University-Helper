@@ -1,7 +1,6 @@
 :- dynamic notebook/3.
 
 notebook("3", "teste", "joao").
-notebook("4", "teste", "jfsdoao").
 
 :- dynamic current_notebook_id/2.
 

@@ -4,14 +4,44 @@
 %    find_all_notebooks(Notebooks),
 %    reply_json(json{notebooks: Notebooks}).
 
-add_notebook(NotebookJson, Response) :-
-    extract_notebook_data(NotebookJson, ID, Type, Name),
-    add_notebook(ID, Type, Name),
-    Response = json{success: true, message: 'Created Notebook(s) successfully.'}.
+% No arquivo 'notebook_controller.pl'
 
-delete_notebook(ID, Type, Name, Response) :-
-    delete_notebook(ID, Type, Name),
-    Response = json{success: true, message: 'Deleted notebook(s) successfully.'}.
+add_notebook(NotebookJson, Result) :-
+    extract_notebook_data(NotebookJson, ID, Type, Name, ExtraData),
+    (   Type = 'conventional'
+    ->  add_conventional_notebook(ID, Name, ExtraData, Result)
+    ;   Type = 'chronological'
+    ->  add_chronological_notebook(ID, Name, ExtraData, Result)
+    ;   Type = 'mental'
+    ->  add_mental_notebook(ID, Name, ExtraData, Result)
+    ;   Result = {response: json{success: false, message: 'Invalid notebook type'}}
+    ).
+
+add_conventional_notebook(ID, Name, SubjectsPages, Result) :-
+    assertz(notebook(ID, Name, SubjectsPages)),
+    save_notebooks,
+    Result = {response: json{success: true, message: 'Created Conventional Notebook successfully.'}, id: ID, name: Name, subjectsPages: SubjectsPages}.
+        
+add_chronological_notebook(ID, Name, HasPages, Result) :-
+    assertz(chronological_notebook(ID, Name, HasPages)),
+    save_notebooks,
+    Result = {response: json{success: true, message: 'Created Chronological Notebook successfully.'}, id: ID, name: Name, hasPages: HasPages}.
+        
+add_mental_notebook(ID, Name, Keywords, Result) :-
+    assertz(mental_notebook(ID, Name, Keywords)),
+    save_notebooks,
+    Result = {response: json{success: true, message: 'Created Mental Notebook successfully.'}, id: ID, name: Name, keywords: Keywords}.
+    
+
+
+delete_notebook_handler(Request) :-
+    extract_notebook_params(Request, ID, Type, _),
+    (   Type = 'chronological'
+    ->  Response = json{success: false, message: 'Cannot delete notes from a Chronological Notebook.'}
+    ;   delete_notebook(ID, Type, _),
+        Response = json{success: true, message: 'Notebook deleted successfully.'}
+    ),
+    reply_json(Response).
 
 update_notebook_handler(Request) :-
     memberchk(path_info(ID), Request), 
@@ -25,3 +55,12 @@ update_notebook_handler(Request) :-
     ;   Response = json{status: "error", message: "Failed to update notebook."}
     ),
     reply_json(Response).
+
+filter_notebooks(ID, Type, Name, FilteredNotebooks) :-
+    findall(notebook{id: NotebookID, type: NotebookType, name: NotebookName},
+        (   notebook(NotebookID, NotebookType, NotebookName),
+        (   nonvar(ID) -> NotebookID = ID; true ),
+        (   nonvar(Type) -> NotebookType = Type; true ),
+        (   nonvar(Name) -> NotebookName = Name; true )
+        ),
+        FilteredNotebooks).

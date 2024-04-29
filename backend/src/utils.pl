@@ -133,13 +133,18 @@ extract_notify_user_data(NotifyUserWarningJson, WarningID, WarnedUser) :-
     json_member(NotifyUserWarningJson, warningID, WarningID),
     json_member(NotifyUserWarningJson, warnedUser, WarnedUser).
 
-extract_notebook_data(NotebookJson, ID, Type, Name) :-
+extract_notebook_data(NotebookJson, ID, Type, Name, ExtraData) :-
     json_member(NotebookJson, id, ID),
     json_member(NotebookJson, type, Type),
-    json_member(NotebookJson, name, Name).
+    json_member(NotebookJson, name, Name),
+    (   Type = 'conventional' -> json_member(NotebookJson, subjects_pages, ExtraData)
+    ;   Type = 'chronological' -> json_member(NotebookJson, has_pages, ExtraData)
+    ;   Type = 'mental' -> json_member(NotebookJson, keywords, ExtraData)
+    ;   ExtraData = []
+    ).
 
-notebook_to_json(Notebook, Json) :-
-    Json = json{ id: Notebook.id, type: Notebook.type, name: Notebook.name }.
+notebook_to_json(notebook(ID, Type, Name), Json) :-
+    Json = json{ id: ID, type: Type, name: Name }.
 
 unify_if_uninstantiated(PossiblyUninstantiatedVar, ValueToUnify) :-
     var(PossiblyUninstantiatedVar),

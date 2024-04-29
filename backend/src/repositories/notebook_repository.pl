@@ -33,3 +33,8 @@ update_notebook(ID, Type, Name) :-
 
 find_all_notebooks(Notebooks) :-
     findall(notebook{ id: ID, type: Type, name: Name }, notebook(ID, Type, Name), Notebooks).
+
+
+conventional_notebook(ID, Name, SubjectsPages).
+chronological_notebook(ID, Name, HasPages).
+mental_notebook(ID, Name, Keywords, ContainedNotebooks).
