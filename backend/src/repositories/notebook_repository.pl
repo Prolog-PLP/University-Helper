@@ -1,5 +1,16 @@
 :- consult('../utils.pl').
-:- dynamic notebook/3.
+:- database_path(BasePath),
+   concat_paths(BasePath, 'notebooks.pl', File),
+   consult(File).
+
+save_notebooks :-
+    database_path(BasePath),
+    concat_paths(BasePath, 'notebooks.pl', File),
+    tell(File),
+    listing(notebook),
+    listing(current_notebook_id),
+    listing(next_notebook_id),
+    told.
 
 add_notebook(ID, Type, Name) :-
     assertz(notebook(ID, Type, Name)),

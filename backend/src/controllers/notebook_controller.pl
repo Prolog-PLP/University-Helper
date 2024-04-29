@@ -1,10 +1,15 @@
 :- consult('../repositories/notebook_repository.pl').
 
-add_notebook_handler(Request) :-
-    http_read_json(Request, JsonData),
-    extract_notebook_data(JsonData, ID, Type, Name),
-    add_notebook(ID, Type, Name, Response),
-    reply_json(Response).
+%add_notebook_handler(Request) :-
+%    http_read_json(Request, JsonData),
+%    extract_notebook_data(JsonData, ID, Type, Name),
+%    add_notebook(ID, Type, Name, Response),
+%    reply_json(Response).
+
+add_notebook(NotebookJson, Response) :-
+    extract_notebook_data(NotebookJson, ID, Type, Name),
+    add_notebook(ID, Type, Name),
+    Response = json{success: true, message: 'Created Notebook(s) successfully.'}.
 
 delete_notebook(ID, Type, Name, Response) :-
     delete_notebook(ID, Type, Name),
@@ -20,6 +25,6 @@ update_notebook_handler(Request) :-
     ),
     reply_json(Response).
 
-    extract_notebook_data(Json, ID, Type, Name) :-
+    %extract_notebook_data(Json, ID, Type, Name) :-
         % Supondo que o JSON seja uma estrutura json{...}
-        Json = json{id: ID, type: Type, name: Name}.
+    %    Json = json{id: ID, type: Type, name: Name}.

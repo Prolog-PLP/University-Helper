@@ -5,6 +5,7 @@ extract_notebook_params(Request, ID, Type, Name) :-
         id(ID, [integer, optional(true)]),
         type(Type, [string, optional(true)]),
         name(Name, [string, optional(true)])
+        % add here the rest of the params that you want, and remember to put the rest that the notebooks needs
     ]).
 
 add_notebook_handler(Request) :-

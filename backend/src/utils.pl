@@ -133,6 +133,11 @@ extract_notify_user_data(NotifyUserWarningJson, WarningID, WarnedUser) :-
     json_member(NotifyUserWarningJson, warningID, WarningID),
     json_member(NotifyUserWarningJson, warnedUser, WarnedUser).
 
+extract_notebook_data(NotebookJson, ID, Type, Name) :-
+    json_member(NotebookJson, id, ID),
+    json_member(NotebookJson, type, Type),
+    json_member(NotebookJson, name, Name).
+
 unify_if_uninstantiated(PossiblyUninstantiatedVar, ValueToUnify) :-
     var(PossiblyUninstantiatedVar),
     PossiblyUninstantiatedVar = ValueToUnify, !.
