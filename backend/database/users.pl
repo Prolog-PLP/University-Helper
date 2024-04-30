@@ -5,6 +5,7 @@ user(2, "John", "john@example.com", "securepassword", "student", '26-04-2024 16:
 user(3, "John", "rames@example.com", "securepassword", "professor", '26-04-2024 16:22:27').
 user(5, "Roberto", "robertoTheMan@example.com", "secure12345", "student", '26-04-2024 21:54:03').
 user(6, "theProfessor", "JohnJohn@example.com", "secure12345", "professor", '26-04-2024 21:54:36').
+user(7, "John Doe", "johnn@example.com", "password123", "student", '27-04-2024 23:17:37').
 
 :- dynamic user/8.
 
@@ -12,7 +13,7 @@ user(4, "John", "roberto@example.com", "securepassword", "professor", "122110748
 
 :- dynamic current_user_id/1.
 
-current_user_id(6).
+current_user_id(7).
 
 next_user_id(A) :-
     current_user_id(B),

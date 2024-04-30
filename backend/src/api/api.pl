@@ -8,6 +8,7 @@
 
 :- consult('./users/api_routes.pl').
 :- consult('./notes/api_routes.pl').
+:- consult('./notebooks/api_routes.pl').
 
 :- multifile http:location/3.
 :- dynamic   http:location/3.
