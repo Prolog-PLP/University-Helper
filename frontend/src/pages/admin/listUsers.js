@@ -164,12 +164,11 @@ const ListUsers = () => {
           return (
             <Button
               onClick={() => {
-                fetch('http://localhost:8000/api/users/validateUser', {
-                  method: 'POST',
+                fetch(`http://localhost:8000/api/users/validate_user/${params.row.id}`, {
+                  method: 'PATCH',
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  body: JSON.stringify(params.row.id),
                 }
                 )
                 const nRows = rows.map((row) => {
