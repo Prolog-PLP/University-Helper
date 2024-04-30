@@ -1,7 +1,16 @@
 :- use_module(library(date)).
 
-user_to_json(user(ID, Name, Email, Password, Type, Enrollment),
-             json{id: ID, name: Name, email: Email, password: Password, type: Type, enrollment: Enrollment}).
+user_to_json(user(ID, Name, Email, Password, Type, CreatedAt),
+             json{id: ID, name: Name, email: Email, password: Password, type: Type, createdAt: CreatedAt}) :- !.
+
+user_to_json(user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+             json{id: ID, name: Name, email: Email, password: Password, type: Type, enrollment: Enrollment, university: University, createdAt: CreatedAt}).
+
+note_to_json(note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
+json{id: ID, type: Type, visibility:Visibility, title: Title, subject: Subject, content: Content, creatorID: CreatorID, createdAt: CreatedAt, updatedAt: UpdatedAt}).
+
+user_warnings_to_json(user_warning(WarningID, WarnedUser),
+json{warningID: WarningID, warnedUser: WarnedUser}).
 
 database_path('backend/database/').
 
@@ -17,7 +26,10 @@ is_empty(_-Value) :-
 all_empty([Head | Tail]) :- is_empty(Head), all_empty(Tail).
 
 json_member(Json, Key, Value) :-
-    get_dict(Key, Json, Value).
+    ( get_dict(Key, Json, Value)
+    -> true
+    ; Value = _
+    ).
 
 create_json_from_list([], json{}).
 create_json_from_list(Pairs, Json) :-
@@ -95,3 +107,23 @@ get_current_year(Year) :-
     get_time(Timestamp),
     stamp_date_time(Timestamp, DateTime, local),
     date_time_value(year, DateTime, Year).
+
+extract_user_data(UserJson, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt) :-
+    Keys = [id, name, email, password, type, enrollment, university, createdAt],
+    Values = [ID, Name, Email, Password, Type, Enrollment, University, CreatedAt],
+    maplist(json_member(UserJson), Keys, Values).
+
+extract_note_data(NoteJson, ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt) :-
+    Keys = [id, type, visibility, title, subject, content, creatorID, createdAt, updatedAt],
+    Values = [ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt],
+    maplist(json_member(NoteJson), Keys, Values).
+
+extract_notify_user_data(NotifyUserWarningJson, WarningID, WarnedUser) :-
+    json_member(NotifyUserWarningJson, warningID, WarningID),
+    json_member(NotifyUserWarningJson, warnedUser, WarnedUser).
+
+unify_if_uninstantiated(PossiblyUninstantiatedVar, ValueToUnify) :-
+    var(PossiblyUninstantiatedVar),
+    PossiblyUninstantiatedVar = ValueToUnify, !.
+
+unify_if_uninstantiated(_, _).
