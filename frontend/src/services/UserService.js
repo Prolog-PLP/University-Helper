@@ -3,7 +3,6 @@ import { capitalize } from "../utils/utils";
 const apiUsersURL = process.env.REACT_APP_API + "/users"
 const usersValidateRoute = apiUsersURL + "/validate"
 const validateRoute = (toValidate) => { return usersValidateRoute + capitalize(toValidate); };
-const isRegisteredRoute = apiUsersURL + "/exists";
 const registerRoute = apiUsersURL + "/add";
 // this route has changed
 const dbUsersRoute = apiUsersURL + "/";
@@ -30,29 +29,23 @@ export default class UserService {
         return await response.json();
     }
 
-    async isRegistered(user) {
-        const response = await fetch(`${isRegisteredRoute}?email=${user.email}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-
-        if (!response.ok) {
-            throw new Error('Failed to check if the user is registered in our app.');
-        }
-
-        return await response.json();
-    }
-
+    // register a user
     async registerUser(user) {
-        await fetch(registerRoute, {
+        const response = await fetch(registerRoute, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(user),
         });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            return responseData;
+        } else {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to create the user on our system');
+        }
     }
 
     // get users 

@@ -7,7 +7,7 @@ extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, Univer
         name(Name, [string, optional(true)]),
         email(Email, [string, optional(true)]),
         password(Password, [string, optional(true)]),
-        type(Type, [string, optional(true), oneof(["student", "administrator", "professor"])]),
+        type(Type, [string, optional(true), oneof(["Student", "Administrator", "Professor"])]),
         enrollment(Enrollment, [string, optional(true)]),
         university(University, [string, optional(true)]),
         createdAt(CreatedAt, [string, optional(true)])
@@ -22,11 +22,15 @@ user_exists_handler(Request) :-
 user_exists_handler(_) :-
     reply_json(false).
 
-add_user_handler(Request) :-
+add_user_handler(post, Request) :-
     cors_enable(Request, [methods([post, options])]),
     http_read_json_dict(Request, User),
     add_user(User, Response),
     reply_json(Response).
+
+add_user_handler(options, Request) :-
+    cors_enable(Request, [methods([post, options])]),
+    reply_json(true), !.
 
 update_user_handler(ID, Request) :-
     cors_enable(Request, [methods([patch, options])]),

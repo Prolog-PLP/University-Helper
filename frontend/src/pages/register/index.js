@@ -24,11 +24,11 @@ const User = () => {
   });
 
   const [errors, setErrors] = useState({
-    nameError: '',
-    universityError: '',
-    emailError: '',
-    enrollmentError: '',
-    passwordError: '',
+    name: '',
+    university: '',
+    email: '',
+    enrollment: '',
+    password: '',
   });
 
   const [alerts, setAlerts] = useState([]);
@@ -69,27 +69,23 @@ const User = () => {
 
   const handleRegister = async () => {
     try {
-      const isRegistered = await api.isRegistered(user);
-      const canRegister = isRegistered !== "Failure";
-      console.log(user);
       const response = await api.registerUser(user);
-      if (response.errors) {
-        setErrors(response.errors);
-      } else {
+      console.log(response);
+      if (!response.errors) {
         auth.login({ email: user.email });
         navigate(redirectPath, { replace: true });
-      }
-
-      if (!canRegister) {
-        showAlert('error', "Usuário já cadastrado no nosso sistema!\nFaça o login!");
-        if (errors.emailError == "Email already exists!"){
+      } else {
+        if (response.errors.email == "Email already exists!") {
+          showAlert('error', "Usuário já cadastrado no nosso sistema!\nFaça o login!");
           setErrors({
-            nameError: '',
-            universityError: '',
-            emailError: '',
-            enrollmentError: '',
-            passwordError: '',
+            name: '',
+            university: '',
+            email: '',
+            enrollment: '',
+            password: '',
           });
+        } else {
+          setErrors(response.errors);
         }
       }
     } catch (error) {
@@ -161,8 +157,8 @@ const User = () => {
                         id="userName"
                         label="Nome"
                         autoFocus
-                        error={Boolean(errors.nameError)}
-                        helperText={errors.nameError}
+                        error={Boolean(errors.name)}
+                        helperText={errors.name}
                         value={user.name}
                         onChange={handleChange}
                       />
@@ -174,8 +170,8 @@ const User = () => {
                         label="Universidade"
                         name="university"
                         autoComplete="university"
-                        error={Boolean(errors.universityError)}
-                        helperText={errors.universityError}
+                        error={Boolean(errors.university)}
+                        helperText={errors.university}
                         value={user.university}
                         onChange={handleChange}
                       />
@@ -200,8 +196,8 @@ const User = () => {
                         label="Matrícula"
                         name="enrollment"
                         autoComplete="enrollment"
-                        error={Boolean(errors.enrollmentError)}
-                        helperText={errors.enrollmentError}
+                        error={Boolean(errors.enrollment)}
+                        helperText={errors.enrollment}
                         value={user.enrollment}
                         onChange={handleChange}
                       />
@@ -213,8 +209,8 @@ const User = () => {
                         label="Email Address"
                         name="email"
                         autoComplete="email"
-                        error={Boolean(errors.emailError)}
-                        helperText={errors.emailError}
+                        error={Boolean(errors.email)}
+                        helperText={errors.email}
                         value={user.email}
                         onChange={handleChange}
                       />
@@ -227,8 +223,8 @@ const User = () => {
                         type="password"
                         id="userPassword"
                         autoComplete="new-password"
-                        error={Boolean(errors.passwordError)}
-                        helperText={errors.passwordError}
+                        error={Boolean(errors.password)}
+                        helperText={errors.password}
                         value={user.password}
                         onChange={handleChange}
                       />

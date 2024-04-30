@@ -8,9 +8,6 @@ export const useApi = () => ({
   validateLogin: async (logInfoSubmission) => {
     return await userService.validateLogin(logInfoSubmission);
   },
-  isRegistered: async (user) => {
-    return await userService.isRegistered(user);
-  },
   registerUser: async (user) => {
     return await userService.registerUser(user);
   },

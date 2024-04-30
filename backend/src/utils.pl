@@ -94,7 +94,7 @@ is_valid_email(Email, '') :-
 is_valid_email(_, 'Email is invalid!').
 
 is_valid_user_type(Type, '') :-
-    member(Type, ["student", "professor", "administrator"]), !.
+    member(Type, ["Student", "Professor", "Administrator"]), !.
 
 is_valid_user_type(_, 'Type is invalid.').
 
