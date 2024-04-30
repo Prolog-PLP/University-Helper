@@ -3,8 +3,8 @@ import { capitalize } from "../utils/utils";
 const apiUsersURL = process.env.REACT_APP_API + "/users"
 const usersValidateRoute = apiUsersURL + "/validate"
 const validateRoute = (toValidate) => { return usersValidateRoute + capitalize(toValidate); };
-const isRegisteredRoute = apiUsersURL + "/isRegistered";
-const registerRoute = apiUsersURL + "/register";
+const isRegisteredRoute = apiUsersURL + "/exists";
+const registerRoute = apiUsersURL + "/add";
 // this route has changed
 const dbUsersRoute = apiUsersURL + "/";
 const getValidUsers = apiUsersURL + "/validated_users";
@@ -13,22 +13,6 @@ const updateUserRoute = apiUsersURL + "/updateAny";
 const getUserFieldRoute = apiUsersURL + "/getAny";
 const getUserByFieldRoute = apiUsersURL + "/user";
 export default class UserService {
-
-    async validateUserField(field, value) {
-        const response = await fetch(validateRoute(field), {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(value)
-        });
-
-        if (!response.ok) {
-            throw new Error(`Failed to validate field ${field}.`);
-        }
-
-        return await response.json();
-    }
 
     async validateLogin(logInfoSubmission) {
         const response = await fetch(validateRoute("login"), {
@@ -47,12 +31,11 @@ export default class UserService {
     }
 
     async isRegistered(user) {
-        const response = await fetch(isRegisteredRoute, {
-            method: 'POST',
+        const response = await fetch(`${isRegisteredRoute}?email=${user.email}`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(user.email)
         })
 
         if (!response.ok) {

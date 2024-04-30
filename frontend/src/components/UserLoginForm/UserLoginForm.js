@@ -56,8 +56,8 @@ const UserLoginForm = () => {
 
     const handleLogin = async () => {
         try {
-            const validationErrors = await validateUser(api, logInfo);
-
+            // const validationErrors = await validateUser(api, logInfo);
+            const validationErrors = 0
             if (Object.keys(validationErrors).length === 0) {
                 const json = await api.validateLogin(logInfo);
                 if (json) {

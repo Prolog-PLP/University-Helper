@@ -6,7 +6,6 @@ import Alert from '@mui/material/Alert';
 import { Form, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useApi } from '../../hooks/useApi';
-import { validateUser } from '../../utils/utils';
 
 function Register() {
   return (
@@ -70,26 +69,20 @@ const User = () => {
 
   const handleRegister = async () => {
     try {
-      const validationErrors = await validateUser(api, user);
+      const isRegistered = await api.isRegistered(user);
+      const canRegister = isRegistered !== "Failure";
+      console.log(user);
+      const response = await api.registerUser(user);
+      if (response.errors) {
+        setErrors(response.errors);
+      } else {
+        auth.login({ email: user.email });
+        navigate(redirectPath, { replace: true });
+      }
 
-      if (Object.keys(validationErrors).length === 0) {
-
-        const isRegistered = await api.isRegistered(user);
-        const canRegister = isRegistered !== "Failure";
-
-        const normalizedUserInfo = Object.keys(user).reduce((acc, key) => {
-          const normalizedKey = 'user' + key.charAt(0).toUpperCase() + key.slice(1);
-          acc[normalizedKey] = user[key];
-          return acc;
-        }, {});
-
-        if (canRegister) {
-          await api.registerUser(normalizedUserInfo);
-          auth.login({ email: user.email });
-          navigate(redirectPath, { replace: true });
-
-        } else {
-          showAlert('error', "Usuário já cadastrado no nosso sistema!\nFaça o login!");
+      if (!canRegister) {
+        showAlert('error', "Usuário já cadastrado no nosso sistema!\nFaça o login!");
+        if (errors.emailError == "Email already exists!"){
           setErrors({
             nameError: '',
             universityError: '',
@@ -98,8 +91,6 @@ const User = () => {
             passwordError: '',
           });
         }
-      } else {
-        setErrors(validationErrors);
       }
     } catch (error) {
       console.log(error);
