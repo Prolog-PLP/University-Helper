@@ -28,12 +28,16 @@ add_user_handler(Request) :-
     add_user(User, Response),
     reply_json(Response).
 
-update_user_handler(ID, Request) :-
+update_user_handler(ID, patch, Request) :-
     cors_enable(Request, [methods([patch, options])]),
     atom_number(ID, UID),
     http_read_json_dict(Request, User),
     update_user(UID, User, Response),
     reply_json(Response).
+
+update_user_handler(_, options, Request) :-
+    cors_enable(Request, [methods([patch, options])]),
+    reply_json(true), !.
 
 delete_users_handler(delete, Request) :-
     cors_enable(Request, [methods([options, delete])]),

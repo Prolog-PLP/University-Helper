@@ -16,8 +16,6 @@ const ListUsers = () => {
 
   useEffect(() => {
     api.getDBUsers().then((dbUsers) => {
-      //const activeUsers = dbUsers.filter(user => user.dbIsDeleted !== true);
-      console.log(dbUsers.users);
       setValidates(dbUsers.users);
     });
   }, []);
@@ -26,8 +24,8 @@ const ListUsers = () => {
     console.log(rows);
   }, [rows]);
 
-  const updateUser = async (field, newValue, match, matchValue) => {
-    await api.updateUserField({ fieldToUpdate: field, newValue, whereField: match, whereValue: matchValue });
+  const updateUser = async (idUser, newValue, userEmail) => {
+    await api.updateUserField({ "id": idUser, "type": newValue, "email": userEmail});
   };
 
   const setValidates = (activeUsers) => {
@@ -95,7 +93,7 @@ const ListUsers = () => {
         }
         return row;
       });
-      updateUser("type", newAccess, "email", email);
+      updateUser(id, newAccess, email);
       setRows(newRows);
     }
   };
