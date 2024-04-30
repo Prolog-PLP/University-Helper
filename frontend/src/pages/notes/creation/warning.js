@@ -19,7 +19,7 @@ const Warning = () => {
     const fetchData = async () => {
       const users = await api.getDBUsers();
       const newU = users.filter(user => user.dbIsDeleted !== true)
-      setDbUsersList(newU);
+      setDbUsersList(users);
     };
     fetchData();
   }, []);
@@ -66,8 +66,8 @@ const Warning = () => {
               <em>Selecione um usuário</em>
             </MenuItem>
             {dbUsersList.map((user) => (
-              <MenuItem key={user.dbUserName} value={user}>
-                {user.dbUserName}
+              <MenuItem key={user.name} value={user}>
+                {user.name}
               </MenuItem>
             ))}
           </Select>

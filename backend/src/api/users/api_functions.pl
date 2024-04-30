@@ -36,7 +36,7 @@ update_user_handler(ID, Request) :-
     reply_json(Response).
 
 delete_users_handler(Request) :-
-    cors_enable(Request, [methods([delete, options])]),
+    cors_enable(Request, [methods([options, delete])]),
     extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
     delete_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Response),
     reply_json(Response).

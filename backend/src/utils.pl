@@ -109,25 +109,14 @@ get_current_year(Year) :-
     date_time_value(year, DateTime, Year).
 
 extract_user_data(UserJson, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt) :-
-    json_member(UserJson, id, ID),
-    json_member(UserJson, name, Name),
-    json_member(UserJson, email, Email),
-    json_member(UserJson, password, Password),
-    json_member(UserJson, type, Type),
-    json_member(UserJson, enrollment, Enrollment),
-    json_member(UserJson, university, University),
-    json_member(UserJson, createdAt, CreatedAt).
+    Keys = [id, name, email, password, type, enrollment, university, createdAt],
+    Values = [ID, Name, Email, Password, Type, Enrollment, University, CreatedAt],
+    maplist(json_member(UserJson), Keys, Values).
 
 extract_note_data(NoteJson, ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt) :-
-    json_member(NoteJson, id, ID),
-    json_member(NoteJson, type, Type),
-    json_member(NoteJson, visibility, Visibility),
-    json_member(NoteJson, title, Title),
-    json_member(NoteJson, subject, Subject),
-    json_member(NoteJson, content, Content),
-    json_member(NoteJson, creatorID, CreatorID),
-    json_member(NoteJson, createdAt, CreatedAt),
-    json_member(NoteJson, updatedAt, UpdatedAt).
+    Keys = [id, type, visibility, title, subject, content, creatorID, createdAt, updatedAt],
+    Values = [ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt],
+    maplist(json_member(NoteJson), Keys, Values).
 
 extract_notify_user_data(NotifyUserWarningJson, WarningID, WarnedUser) :-
     json_member(NotifyUserWarningJson, warningID, WarningID),
