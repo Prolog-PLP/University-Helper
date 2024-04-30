@@ -1,8 +1,3 @@
-:- consult('../utils.pl').
-:- database_path(BasePath),
-   concat_paths(BasePath, 'user_warnings.pl', File),
-   consult(File).
-
 save_user_warnings :-
     database_path(BasePath),
     concat_paths(BasePath, 'user_warnings.pl', File),

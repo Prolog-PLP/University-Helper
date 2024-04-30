@@ -1,8 +1,3 @@
-:- consult('../utils.pl').
-:- database_path(BasePath),
-   concat_paths(BasePath, 'notes.pl', File),
-   consult(File).
-
 save_notes :-
     database_path(BasePath),
     concat_paths(BasePath, 'notes.pl', File),
@@ -24,9 +19,8 @@ delete_notes(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt
     save_notes.
 
 get_note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt, Note) :-
-        (   note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt)
-        ->  Note = note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt)
-        ).
+        note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
+        Note = note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt).
 
 get_notes(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt, Notes) :-
     findall(
