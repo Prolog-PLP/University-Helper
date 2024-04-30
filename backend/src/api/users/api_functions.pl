@@ -35,11 +35,20 @@ update_user_handler(ID, Request) :-
     update_user(UID, User, Response),
     reply_json(Response).
 
-delete_users_handler(Request) :-
+delete_users_handler(delete, Request) :-
     cors_enable(Request, [methods([options, delete])]),
     extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+    ((exists_val(ID)) 
+    -> 
+        remove_validation(ID)
+    ;   true
+    ),
     delete_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Response),
     reply_json(Response).
+
+delete_users_handler(options, Request) :-
+    cors_enable(Request, [methods([options, delete])]),
+    reply_json(true), !.
 
 validate_user_handler(patch, ID, Request) :-
     cors_enable(Request, [methods([patch, options])]),
