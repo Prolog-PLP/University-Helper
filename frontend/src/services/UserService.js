@@ -103,7 +103,6 @@ export default class UserService {
             },
             body: JSON.stringify(data),
         });
-        console.log(data);
         if (!response.ok) {
             throw new Error('Failed to update user');
         }
@@ -112,8 +111,8 @@ export default class UserService {
     }
 
     async getUserField(data) {
-        const queryParams = new URLSearchParams(data).toString();
-        const url = getUserFieldRoute + `?${queryParams}`;
+        const queryParams = `${data.unique_key_name}=${data.unique_key}`;
+        const url = getAllUsersRoute + `?${queryParams}`;
 
         const response = await fetch(url, {
             method: 'GET',
@@ -125,14 +124,19 @@ export default class UserService {
         if (!response.ok) {
             throw new Error('Failed to fetch user field.');
         }
-
-        return await response.json();
+        const responseData = await response.json();
+        const field = data.attribute;
+        if (responseData.users && responseData.users.length > 0) {
+            return responseData.users[0][field];
+        } else {
+            throw new Error('No users found.');
+        }
+    
     }
 
     async getUserByField(data) {
         const queryParams = new URLSearchParams(data).toString();
         const url = getUserByFieldRoute + `?${queryParams}`;
-        console.log(url);
 
         const response = await fetch(url, {
             method: 'GET',

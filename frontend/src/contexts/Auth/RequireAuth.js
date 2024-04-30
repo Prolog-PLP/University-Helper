@@ -14,12 +14,12 @@ export const RequireAuth = ({ allowedRoles }) => {
     useEffect(() => {
         const fetchUserField = async () => {
             try {
+
                 const response = await api.getUserField({
                     unique_key_name: "email",
                     unique_key: auth.user.email,
                     attribute: "type"
                 });
-
                 const authorized = isAuthenticated && allowedRoles.includes(response);
                 setIsAuthorized(authorized);
             } catch (error) {

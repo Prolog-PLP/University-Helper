@@ -50,7 +50,6 @@ const UserLoginForm = () => {
     const handleLogin = async () => {
         try {
             const json = await api.validateLogin(logInfo);
-            console.log(json.users[0]);
             if (json.users.length === 1 && logInfo.email !== '' && logInfo.password !== '') {
                 auth.login(json.users[0]);
                 navigate(redirectPath, { replace: true });
