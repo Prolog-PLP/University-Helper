@@ -6,17 +6,11 @@ import Alert from '@mui/material/Alert';
 import { Form, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useApi } from '../../hooks/useApi';
-import { validateUser } from '../../utils/utils';
 
 const UserLoginForm = () => {
     const [logInfo, setLogInfo] = useState({
         email: '',
         password: '',
-    });
-
-    const [errors, setErrors] = useState({
-        emailError: '',
-        passwordError: '',
     });
 
     const [alerts, setAlerts] = useState([]);
@@ -28,7 +22,6 @@ const UserLoginForm = () => {
     const redirectPath = location.state?.path || '/';
 
     useEffect(() => {
-        setErrors(errors);
         if (alerts.length > 0) {
             const timer = setTimeout(() => {
                 setAlerts(prevAlerts => prevAlerts.slice(1));
@@ -36,7 +29,7 @@ const UserLoginForm = () => {
 
             return () => clearTimeout(timer);
         }
-    }, [alerts, errors]);
+    }, [alerts]);
 
     const showAlert = (severity, message) => {
         setAlerts(prevAlerts => [...prevAlerts, { severity, message }]);
@@ -56,19 +49,13 @@ const UserLoginForm = () => {
 
     const handleLogin = async () => {
         try {
-            // const validationErrors = await validateUser(api, logInfo);
-            const validationErrors = 0
-            if (Object.keys(validationErrors).length === 0) {
-                const json = await api.validateLogin(logInfo);
-                if (json) {
-                    auth.login({ email: logInfo.email });
-                    navigate(redirectPath, { replace: true });
-                } else {
-                    showAlert('error', 'Login e/ou senha inválidos');
-                    setErrors({ emailError: '', passwordError: '' });
-                }
+            const json = await api.validateLogin(logInfo);
+            console.log(json.users[0]);
+            if (json.users.length === 1 && logInfo.email !== '' && logInfo.password !== '') {
+                auth.login(json.users[0]);
+                navigate(redirectPath, { replace: true });
             } else {
-                setErrors(validationErrors);
+                showAlert('error', 'Login e/ou senha inválidos');
             }
         } catch (error) {
             console.log(error);
@@ -141,8 +128,6 @@ const UserLoginForm = () => {
                                         sx={styles.textField}
                                         value={logInfo.email}
                                         onChange={handleChange}
-                                        error={Boolean(errors.emailError)}
-                                        helperText={errors.emailError}
                                     />
                                     <TextField
                                         margin="normal"
@@ -155,8 +140,6 @@ const UserLoginForm = () => {
                                         sx={styles.textField}
                                         value={logInfo.password}
                                         onChange={handleChange}
-                                        error={Boolean(errors.passwordError)}
-                                        helperText={errors.passwordError}
                                     />
                                     <Button
                                         type="submit"

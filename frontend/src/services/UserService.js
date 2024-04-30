@@ -1,8 +1,7 @@
 import { capitalize } from "../utils/utils";
 
 const apiUsersURL = process.env.REACT_APP_API + "/users"
-const usersValidateRoute = apiUsersURL + "/validate"
-const validateRoute = (toValidate) => { return usersValidateRoute + capitalize(toValidate); };
+const getAllUsersRoute = apiUsersURL + "/"
 const registerRoute = apiUsersURL + "/add";
 // this route has changed
 const dbUsersRoute = apiUsersURL + "/";
@@ -14,18 +13,17 @@ const getUserByFieldRoute = apiUsersURL + "/user";
 export default class UserService {
 
     async validateLogin(logInfoSubmission) {
-        const response = await fetch(validateRoute("login"), {
-            method: 'POST',
+        const url = `${getAllUsersRoute}?email=${logInfoSubmission.email}&password=${logInfoSubmission.password}`;
+        const response = await fetch(url, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(logInfoSubmission)
         });
 
         if (!response.ok) {
             throw new Error('Failed to validate login.');
-        }
-
+        }    
         return await response.json();
     }
 

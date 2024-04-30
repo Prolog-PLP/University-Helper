@@ -88,7 +88,7 @@ const ListUsers = () => {
   const handleAccessChange = (id, newAccess, email) => {
     // Impede a alteração do nível de acesso se for 'admin'
     const currentAccess = rows.find(row => row.id === id).type;
-    if (currentAccess !== "admin") {
+    if (currentAccess !== "Administrator") {
       const newRows = rows.map((row) => {
         if (row.id === id) {
           return { ...row, type: newAccess };
@@ -212,25 +212,25 @@ const ListUsers = () => {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              backgroundColor: params.row.type === "administrator"
+              backgroundColor: params.row.type === "Administrator"
                 ? theme.palette.special.main
                 : theme.palette.secondary.main,
               color: theme.palette.primary.contrastText,
             }}
           >
-            <MenuItem value="administrator" disabled>
+            <MenuItem value="Administrator" disabled>
               <ListItemIcon>
                 <AdminPanelSettingsOutlinedIcon fontSize="small" />
               </ListItemIcon>
               <Typography variant="body2">Admin</Typography>
             </MenuItem>
-            <MenuItem value="professor">
+            <MenuItem value="Professor">
               <ListItemIcon>
                 <SecurityOutlinedIcon fontSize="small" />
               </ListItemIcon>
               <Typography variant="body2">Professor</Typography>
             </MenuItem>
-            <MenuItem value="student">
+            <MenuItem value="Student">
               <ListItemIcon>
                 <LockOpenOutlinedIcon fontSize="small" />
               </ListItemIcon>

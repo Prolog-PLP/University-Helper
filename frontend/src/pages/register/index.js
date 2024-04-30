@@ -72,7 +72,7 @@ const User = () => {
       const response = await api.registerUser(user);
       console.log(response);
       if (!response.errors) {
-        auth.login({ email: user.email });
+        auth.login(user);
         navigate(redirectPath, { replace: true });
       } else {
         if (response.errors.email == "Email already exists!") {
