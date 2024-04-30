@@ -1,5 +1,6 @@
 :- consult('../../controllers/user_controller.pl').
 
+
 extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt) :-
     http_parameters(Request, [
         id(ID, [integer, optional(true)]),
@@ -13,6 +14,7 @@ extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, Univer
     ]).
 
 user_exists_handler(Request) :-
+    cors_enable(Request, [methods([get, options])]),
     extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
     get_user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, _),
     reply_json(true), !.
@@ -21,43 +23,51 @@ user_exists_handler(_) :-
     reply_json(false).
 
 add_user_handler(Request) :-
+    cors_enable(Request, [methods([post, options])]),
     http_read_json_dict(Request, User),
     add_user(User, Response),
     reply_json(Response).
 
 update_user_handler(ID, Request) :-
+    cors_enable(Request, [methods([patch, options])]),
     atom_number(ID, UID),
     http_read_json_dict(Request, User),
     update_user(UID, User, Response),
     reply_json(Response).
 
 delete_users_handler(Request) :-
+    cors_enable(Request, [methods([options, delete])]),
     extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
     delete_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Response),
     reply_json(Response).
 
-validate_user_handler(ID, _) :-
+validate_user_handler(ID, Request) :-
+    cors_enable(Request, [methods([patch, options])]),
     atom_number(ID, UID),
     remove_validation(UID).
 
 unvalidate_user_handler(Request) :-
+    cors_enable(Request, [methods([patch, options])]),
     extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
     remove_validation(ID),
     delete_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Response),
     reply_json(Response).
 
 get_users_handler(Request) :-
+    cors_enable(Request, [methods([get, options])]),
     extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
     get_all_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Users),
     maplist(user_to_json, Users, UsersJson),
     reply_json(json{users: UsersJson}).
 
-get_validated_users_handler(_) :-
+get_validated_users_handler(Request) :-
+    cors_enable(Request, [methods([get, options])]),
     get_validated_or_not_users(Users, true),
     maplist(user_to_json, Users, UsersJson),
     reply_json(json{users: UsersJson}).
 
-get_unvalidated_users_handler(_) :-
+get_unvalidated_users_handler(Request) :-
+    cors_enable(Request, [methods([get, options])]),
     get_validated_or_not_users(Users, false),
     maplist(user_to_json, Users, UsersJson),
     reply_json(json{users: UsersJson}).

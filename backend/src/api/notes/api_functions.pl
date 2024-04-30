@@ -20,16 +20,19 @@ extract_user_warning_params(Request, WarningID, WarnedUser) :-
     ]).
 
 add_note_handler(Request) :-
+    cors_enable(Request, [methods([add, options])]),
     http_read_json_dict(Request, Note),
     add_note(Note, Response),
     reply_json(Response).
 
 delete_notes_handler(Request) :-
+    cors_enable(Request, [methods([delete, options])]),
     extract_note_params(Request, ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
     delete_notes(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt, Response),
     reply_json(Response).
 
 get_notes_handler(Request) :-
+    cors_enable(Request, [methods([get, options])]),
     extract_note_params(Request, ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
     get_notes(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt, Notes),
     maplist(note_to_json, Notes, NotesJson),
@@ -37,17 +40,20 @@ get_notes_handler(Request) :-
 
 update_note_handler(ID, Request) :-
     % I think that'll need to change, 'cause it'll not be a number
+    cors_enable(Request, [methods([get, post])]),
     atom_number(ID, UID),
     http_read_json_dict(Request, Note),
     update_note(UID, Note, Response),
     reply_json(Response).
     
 notify_user_handler(Request) :-
+    cors_enable(Request, [methods([post, options])]),
     http_read_json_dict(Request, NotifyUserWarning),
     notify_user(NotifyUserWarning, Response),
     reply_json(Response).
 
 user_notifications_handler(Request) :-
+    cors_enable(Request, [methods([get, options])]),
     extract_user_warning_params(Request, WarningID, WarnedUser),
     get_user_warnings(WarningID, WarnedUser, UserWarnings),
     maplist(user_warnings_to_json, UserWarnings, UserWarningsJson),

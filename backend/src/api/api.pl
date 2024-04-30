@@ -2,6 +2,9 @@
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(http/http_json)).
 :- use_module(library(http/http_parameters)).
+:- use_module(library(http/http_cors)).
+
+:- set_setting(http:cors, [*]).
 
 :- consult('./users/api_routes.pl').
 :- consult('./notes/api_routes.pl').
