@@ -6,6 +6,12 @@ user_to_json(user(ID, Name, Email, Password, Type, CreatedAt),
 user_to_json(user(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
              json{id: ID, name: Name, email: Email, password: Password, type: Type, enrollment: Enrollment, university: University, createdAt: CreatedAt}).
 
+note_to_json(note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
+json{id: ID, type: Type, visibility:Visibility, title: Title, subject: Subject, content: Content, creatorID: CreatorID, createdAt: CreatedAt, updatedAt: UpdatedAt}).
+
+user_warnings_to_json(user_warning(WarningID, WarnedUser),
+json{warningID: WarningID, warnedUser: WarnedUser}).
+
 database_path('backend/database/').
 
 concat_paths(BasePath, PathToConcat, Result) :-
@@ -103,14 +109,18 @@ get_current_year(Year) :-
     date_time_value(year, DateTime, Year).
 
 extract_user_data(UserJson, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt) :-
-    json_member(UserJson, id, ID),
-    json_member(UserJson, name, Name),
-    json_member(UserJson, email, Email),
-    json_member(UserJson, password, Password),
-    json_member(UserJson, type, Type),
-    json_member(UserJson, enrollment, Enrollment),
-    json_member(UserJson, university, University),
-    json_member(UserJson, createdAt, CreatedAt).
+    Keys = [id, name, email, password, type, enrollment, university, createdAt],
+    Values = [ID, Name, Email, Password, Type, Enrollment, University, CreatedAt],
+    maplist(json_member(UserJson), Keys, Values).
+
+extract_note_data(NoteJson, ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt) :-
+    Keys = [id, type, visibility, title, subject, content, creatorID, createdAt, updatedAt],
+    Values = [ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt],
+    maplist(json_member(NoteJson), Keys, Values).
+
+extract_notify_user_data(NotifyUserWarningJson, WarningID, WarnedUser) :-
+    json_member(NotifyUserWarningJson, warningID, WarningID),
+    json_member(NotifyUserWarningJson, warnedUser, WarnedUser).
 
 unify_if_uninstantiated(PossiblyUninstantiatedVar, ValueToUnify) :-
     var(PossiblyUninstantiatedVar),
