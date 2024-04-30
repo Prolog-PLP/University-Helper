@@ -16,8 +16,9 @@ const ListUsers = () => {
 
   useEffect(() => {
     api.getDBUsers().then((dbUsers) => {
-      const activeUsers = dbUsers.filter(user => user.dbIsDeleted !== true);
-      setValidates(activeUsers);
+      //const activeUsers = dbUsers.filter(user => user.dbIsDeleted !== true);
+      console.log(dbUsers.users);
+      setValidates(dbUsers.users);
     });
   }, []);
 
@@ -30,7 +31,8 @@ const ListUsers = () => {
   };
 
   const setValidates = (activeUsers) => {
-    fetch('http://localhost:8000/api/users/getIdsValidated', {
+
+    fetch('http://localhost:8000/api/users/validated_users', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -39,11 +41,11 @@ const ListUsers = () => {
     })
       .then(response => response.json())
       .then(data => {
-        const userIds = data.map(item => item.userId);
+        const userIds = data.users.map(item => item.id);
         const hashSet = new Set(userIds);
         const nRows = activeUsers.map(activeUser => ({
           ...activeUser,
-          isValidated: hashSet.has(activeUser.dbUserId) || activeUser.dbUserId === 1,
+          isValidated: hashSet.has(activeUser.id) || activeUser.id === 1,
         }))
         setRows(nRows);
       })
@@ -83,13 +85,13 @@ const ListUsers = () => {
     },
   });
 
-  const handleAccessChange = (dbUserId, newAccess, email) => {
+  const handleAccessChange = (id, newAccess, email) => {
     // Impede a alteração do nível de acesso se for 'admin'
-    const currentAccess = rows.find(row => row.dbUserId === dbUserId).dbUserType;
-    if (currentAccess !== "Admin") {
+    const currentAccess = rows.find(row => row.id === id).type;
+    if (currentAccess !== "admin") {
       const newRows = rows.map((row) => {
-        if (row.dbUserId === dbUserId) {
-          return { ...row, dbUserType: newAccess };
+        if (row.id === id) {
+          return { ...row, type: newAccess };
         }
         return row;
       });
@@ -98,49 +100,49 @@ const ListUsers = () => {
     }
   };
 
-
-  const handleDeleteRow = (dbUserId) => {
-    fetch('http://localhost:8000/api/users/deleteUser', {
-      method: 'POST',
+  const handleDeleteRow = (id) => {
+    fetch(`http://localhost:8000/api/users/delete?id=${id}`, {
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(dbUserId.toString()),
+      mode: 'cors',
     })
       .then(response => response.json())
       .then(result => {
-        if (result === "Success") {
-          setRows(prevRows => prevRows.filter(row => row.dbUserId !== dbUserId));
+        console.log(result);
+        if (result.success) {
+          setRows(prevRows => prevRows.filter(row => row.id !== id));
         }
       })
       .catch(error => console.error('Error deleting user:', error));
   };
 
   const columns = [
-    { field: 'dbUserId', headerName: 'Id', headerAlign: 'center', flex: 0.5 },
+    { field: "id", headerName: 'Id', headerAlign: 'center', flex: 0.5 },
     {
-      field: 'dbUserName',
+      field: "name",
       headerName: 'Nome',
       headerAlign: 'center',
       flex: 1,
     },
     {
-      field: 'dbUserUniversity',
+      field: "university",
       headerName: 'Universidade',
       type: 'number',
       headerAlign: 'center',
       align: 'left',
       flex: 1,
     },
-    { field: 'dbUserEnrollment', headerName: 'Matrícula', headerAlign: 'center', align: 'center', flex: 1 },
-    { field: 'dbUserEmail', headerName: 'Email', headerAlign: 'center', flex: 1 },
+    { field: "enrollment", headerName: 'Matrícula', headerAlign: 'center', align: 'center', flex: 1 },
+    { field: "email", headerName: 'Email', headerAlign: 'center', flex: 1 },
     {
       field: 'delete',
       headerName: 'Deletar',
       headerAlign: 'center',
       flex: 0.5,
       renderCell: (params) => (
-        <IconButton onClick={() => handleDeleteRow(params.row.dbUserId)}>
+        <IconButton onClick={() => handleDeleteRow(params.row.id)}>
           <DeleteIcon color="error" />
         </IconButton>
       ),
@@ -167,11 +169,11 @@ const ListUsers = () => {
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  body: JSON.stringify(params.row.dbUserId),
+                  body: JSON.stringify(params.row.id),
                 }
                 )
                 const nRows = rows.map((row) => {
-                  if (row.dbUserId === params.row.dbUserId)
+                  if (row.id === params.row.id)
                     row.isValidated = true;
                   return { ...row }
                 })
@@ -197,39 +199,39 @@ const ListUsers = () => {
       }
     },
     {
-      field: 'dbUserType',
+      field: 'type',
       headerName: 'Cargo',
       headerAlign: 'center',
       flex: 1,
       renderCell: (params) => (
         <FormControl fullWidth>
           <Select
-            value={params.row.dbUserType}
-            onChange={(event) => handleAccessChange(params.row.dbUserId, event.target.value, params.row.dbUserEmail)}
+            value={params.row.type}
+            onChange={(event) => handleAccessChange(params.row.id, event.target.value, params.row.email)}
             displayEmpty
             size="small"
             sx={{
               display: 'flex',
               alignItems: 'center',
-              backgroundColor: params.row.dbUserType === 'admin'
+              backgroundColor: params.row.type === "administrator"
                 ? theme.palette.special.main
                 : theme.palette.secondary.main,
               color: theme.palette.primary.contrastText,
             }}
           >
-            <MenuItem value="Admin" disabled>
+            <MenuItem value="administrator" disabled>
               <ListItemIcon>
                 <AdminPanelSettingsOutlinedIcon fontSize="small" />
               </ListItemIcon>
               <Typography variant="body2">Admin</Typography>
             </MenuItem>
-            <MenuItem value="Professor">
+            <MenuItem value="professor">
               <ListItemIcon>
                 <SecurityOutlinedIcon fontSize="small" />
               </ListItemIcon>
               <Typography variant="body2">Professor</Typography>
             </MenuItem>
-            <MenuItem value="Student">
+            <MenuItem value="student">
               <ListItemIcon>
                 <LockOpenOutlinedIcon fontSize="small" />
               </ListItemIcon>
@@ -281,7 +283,7 @@ const ListUsers = () => {
         >
           <DataGrid rows={rows}
             columns={columns}
-            getRowId={(row) => row.dbUserId}
+            getRowId={(row) => row.id}
             autoPageSize />
         </Box>
       </Box>

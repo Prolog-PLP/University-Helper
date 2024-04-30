@@ -10,8 +10,6 @@ user(6, "theProfessor", "JohnJohn@example.com", "secure12345", "professor", '26-
 
 user(4, "John", "roberto@example.com", "securepassword", "professor", "122110748", "ufcg", '26-04-2024 16:22:27').
 
-:- dynamic user_warnings/2.
-
 
 :- dynamic current_user_id/1.
 
