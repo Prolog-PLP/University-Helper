@@ -6,7 +6,7 @@ http:location(users, api(users), []).
 :- http_handler(users(exists), user_exists_handler, [method(options, get)]).
 :- http_handler(users(add), add_user_handler(Method), [method(Method), methods([options, post])]).
 :- http_handler(users(delete), delete_users_handler(Method), [method(Method), methods(options, delete)]).
-:- http_handler(users(update/ID), update_user_handler(ID), [method(options, patch)]).
+:- http_handler(users(update/ID), update_user_handler(ID, Method), [method(Method), methods(options, patch)]).
 :- http_handler(users(validated_users), get_validated_users_handler, [method(options, get)]).
 :- http_handler(users(unvalidated_users), get_unvalidated_users_handler, [method(options, get)]).
 :- http_handler(users(validate_user/ID), validate_user_handler(Method, ID), [method(Method), methods(options, patch)]).

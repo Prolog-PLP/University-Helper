@@ -7,7 +7,7 @@ const registerRoute = apiUsersURL + "/add";
 const dbUsersRoute = apiUsersURL + "/";
 const getValidUsers = apiUsersURL + "/validated_users";
 const getUnvalidUsers = apiUsersURL + "/unvalidated_users";
-const updateUserRoute = apiUsersURL + "/updateAny";
+const updateUserRoute = apiUsersURL + "/update";
 const getUserFieldRoute = apiUsersURL + "/getAny";
 const getUserByFieldRoute = apiUsersURL + "/user";
 export default class UserService {
@@ -96,14 +96,14 @@ export default class UserService {
     
 
     async updateUserField(data) {
-        const response = await fetch(updateUserRoute, {
-            method: 'POST',
+        const response = await fetch(`${updateUserRoute}/${data.id}`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
         });
-
+        console.log(data);
         if (!response.ok) {
             throw new Error('Failed to update user');
         }
