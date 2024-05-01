@@ -91,4 +91,15 @@ export default class NoteService {
     return responseData.notes;
   }
 
+  async getWarnedUserByWarningID(warningID) {
+    const url = userNotificationsRoute + `?warningID=${warningID}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    const responseData = await response.json();
+    return responseData;
+  }
 }
