@@ -1,4 +1,5 @@
 :- consult('../repositories/note_repository.pl').
+:- debug(add_note), debug(add_note_aux).
 
 add_note(NoteJson, Response) :-
     extract_note_data(NoteJson, ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
@@ -8,8 +9,8 @@ add_note(NoteJson, Response) :-
     (   (is_empty(Errors))
     ->  
         ((var(Subject) -> Subject = "" ; true)),
-        ((var(UpdatedAt) -> UpdatedAt = "" ; true )),
         add_note_aux(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
+        debug(add_note, '~w', ["oi3"]),
         id_type(Type, IdType),
         current_note_id(IdType, CurrentID),
         format(atom(Message), 'Created note with ID ~w successfully.', [CurrentID]),
@@ -18,19 +19,22 @@ add_note(NoteJson, Response) :-
         Response = json{success: false, errors: Errors, message: 'Failed to create note.'}
     ).
 
-id_type("Warning", war).
-id_type("PlainText", plt).
-id_type("Reminder", rem).
+id_type("Warning", war) :- !.
+id_type("PlainText", plt) :- !.
+id_type("Reminder", rem) :- !.
 id_type(_, _).
 
 get_id(Type, Response) :-
     next_note_id(Type, Response).
 
 add_note_aux(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt) :-
+    debug(add_note, '~w', ["oi1"]),
     id_type(Type, IdType),
+    debug(add_note, '~w ~w', [Type, IdType]),
     next_note_id(IdType, ID),
     get_time(CurrentTime),
     format_time(atom(CreatedAt), '%d-%m-%Y %H:%M:%S', CurrentTime),
+    debug(add_note, '~w', ["oi2"]),
     UpdatedAt = CreatedAt,
     add_note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt).
 

@@ -1,6 +1,6 @@
 :- dynamic user/6.
 
-user(1, "Everton", "everton@admin.ufcg.edu.br", "senhasegura", "administrator", "19-04-2024 08:00:00").
+user(1, "Everton", "everton@admin.ufcg.edu.br", "senhasegura", "Administrator", "19-04-2024 08:00:00").
 
 :- dynamic user/8.
 
