@@ -1,0 +1,1 @@
+:- dynamic user_warning/2.
