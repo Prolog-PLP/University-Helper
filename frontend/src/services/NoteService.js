@@ -17,7 +17,7 @@ export default class NoteService {
       },
     });
     const data = await response.json();
-    return data;
+    return data.id;
   }
 
   async removeNote(note) {
