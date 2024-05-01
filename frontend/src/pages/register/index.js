@@ -6,7 +6,6 @@ import Alert from '@mui/material/Alert';
 import { Form, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useApi } from '../../hooks/useApi';
-import { validateUser } from '../../utils/utils';
 
 function Register() {
   return (
@@ -25,11 +24,11 @@ const User = () => {
   });
 
   const [errors, setErrors] = useState({
-    nameError: '',
-    universityError: '',
-    emailError: '',
-    enrollmentError: '',
-    passwordError: '',
+    name: '',
+    university: '',
+    email: '',
+    enrollment: '',
+    password: '',
   });
 
   const [alerts, setAlerts] = useState([]);
@@ -70,36 +69,24 @@ const User = () => {
 
   const handleRegister = async () => {
     try {
-      const validationErrors = await validateUser(api, user);
-
-      if (Object.keys(validationErrors).length === 0) {
-
-        const isRegistered = await api.isRegistered(user);
-        const canRegister = isRegistered !== "Failure";
-
-        const normalizedUserInfo = Object.keys(user).reduce((acc, key) => {
-          const normalizedKey = 'user' + key.charAt(0).toUpperCase() + key.slice(1);
-          acc[normalizedKey] = user[key];
-          return acc;
-        }, {});
-
-        if (canRegister) {
-          await api.registerUser(normalizedUserInfo);
-          auth.login({ email: user.email });
-          navigate(redirectPath, { replace: true });
-
-        } else {
+      const response = await api.registerUser(user);
+      console.log(response);
+      if (!response.errors) {
+        auth.login(user);
+        navigate(redirectPath, { replace: true });
+      } else {
+        if (response.errors.email == "Email already exists!") {
           showAlert('error', "Usuário já cadastrado no nosso sistema!\nFaça o login!");
           setErrors({
-            nameError: '',
-            universityError: '',
-            emailError: '',
-            enrollmentError: '',
-            passwordError: '',
+            name: '',
+            university: '',
+            email: '',
+            enrollment: '',
+            password: '',
           });
+        } else {
+          setErrors(response.errors);
         }
-      } else {
-        setErrors(validationErrors);
       }
     } catch (error) {
       console.log(error);
@@ -170,8 +157,8 @@ const User = () => {
                         id="userName"
                         label="Nome"
                         autoFocus
-                        error={Boolean(errors.nameError)}
-                        helperText={errors.nameError}
+                        error={Boolean(errors.name)}
+                        helperText={errors.name}
                         value={user.name}
                         onChange={handleChange}
                       />
@@ -183,8 +170,8 @@ const User = () => {
                         label="Universidade"
                         name="university"
                         autoComplete="university"
-                        error={Boolean(errors.universityError)}
-                        helperText={errors.universityError}
+                        error={Boolean(errors.university)}
+                        helperText={errors.university}
                         value={user.university}
                         onChange={handleChange}
                       />
@@ -209,8 +196,8 @@ const User = () => {
                         label="Matrícula"
                         name="enrollment"
                         autoComplete="enrollment"
-                        error={Boolean(errors.enrollmentError)}
-                        helperText={errors.enrollmentError}
+                        error={Boolean(errors.enrollment)}
+                        helperText={errors.enrollment}
                         value={user.enrollment}
                         onChange={handleChange}
                       />
@@ -222,8 +209,8 @@ const User = () => {
                         label="Email Address"
                         name="email"
                         autoComplete="email"
-                        error={Boolean(errors.emailError)}
-                        helperText={errors.emailError}
+                        error={Boolean(errors.email)}
+                        helperText={errors.email}
                         value={user.email}
                         onChange={handleChange}
                       />
@@ -236,8 +223,8 @@ const User = () => {
                         type="password"
                         id="userPassword"
                         autoComplete="new-password"
-                        error={Boolean(errors.passwordError)}
-                        helperText={errors.passwordError}
+                        error={Boolean(errors.password)}
+                        helperText={errors.password}
                         value={user.password}
                         onChange={handleChange}
                       />

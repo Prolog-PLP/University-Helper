@@ -7,6 +7,8 @@ add_note(NoteJson, Response) :-
     create_json_from_list([title-TitleErrors], is_empty, Errors),
     (   (is_empty(Errors))
     ->  
+        ((var(Subject) -> Subject = "" ; true)),
+        ((var(UpdatedAt) -> UpdatedAt = "" ; true )),
         add_note_aux(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
         id_type(Type, IdType),
         current_note_id(IdType, CurrentID),
@@ -20,6 +22,9 @@ id_type("Warning", war).
 id_type("PlainText", plt).
 id_type("Reminder", rem).
 id_type(_, _).
+
+get_id(Type, Response) :-
+    next_note_id(Type, Response).
 
 add_note_aux(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt) :-
     id_type(Type, IdType),
@@ -37,7 +42,9 @@ delete_notes(_, _, _, _, _, _, _, _, _, Response) :-
     Response = json{success: false, errors: json{json: "No such note in database."}, message: 'Failed to delete note.'}.
 
 update_note(ID, UpdatedNoteJson, Response) :-
-    extract_note_data(UpdatedNoteJson, _, Type, Visibility, Title, Subject, Content, _, _, UpdatedAt),
+    extract_note_data(UpdatedNoteJson, _, Type, Visibility, Title, Subject, Content, _, _, _),
+    get_time(CurrentTime),
+    format_time(atom(UpdatedAt), '%d-%m-%Y %H:%M:%S', CurrentTime),
     update_note(ID, Type, Visibility, Title, Subject, Content, _, _, UpdatedAt),
     Response = json{success: true, message: 'Updated note(s) successfully.'}, !.
 

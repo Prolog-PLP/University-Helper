@@ -20,11 +20,11 @@ const router = createBrowserRouter(
       <Route path="login" element={<LoginPage />} />
       <Route path="logout" element={<LogoutPage />} />
 
-      {/*<Route element={<ProtectedRoutes allowedRoles={["Admin"]} />}>*/}
+      <Route element={<ProtectedRoutes allowedRoles={["Administrator"]} />}>
         <Route path="admin" element={<AdminPage />} />
-      {/*</Route>*/}
+      </Route>
 
-      <Route element={<ProtectedRoutes allowedRoles={["admin", "professor", "student"]} />}>
+      <Route element={<ProtectedRoutes allowedRoles={["Administrator", "Professor", "Student"]} />}>
         <Route path="note-creation" element={<NoteCreationPage />} />
         <Route path="note-list">
           <Route index element={<ListNotesWithEdit />} />
@@ -34,7 +34,7 @@ const router = createBrowserRouter(
       </Route>
 
       {/* Please, remove the admin from the list! */}
-      <Route element={<ProtectedRoutes allowedRoles={["admin", "professor", "student"]} />}>
+      <Route element={<ProtectedRoutes allowedRoles={["Administrator", "Professor", "Student"]} />}>
         <Route path="Warnings" element={<ListNotesReadOnly />} />
       </Route>
 

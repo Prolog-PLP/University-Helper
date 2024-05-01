@@ -19,13 +19,30 @@ extract_user_warning_params(Request, WarningID, WarnedUser) :-
         warnedUser(WarnedUser, [integer, optional(true)])
     ]).
 
-add_note_handler(Request) :-
-    cors_enable(Request, [methods([add, options])]),
+add_note_handler(options, Request) :-
+    cors_enable(Request, [methods([post, options])]),
+    reply_json(true), !.
+
+add_note_handler(post, Request) :-
+    cors_enable(Request, [methods([post, options])]),
     http_read_json_dict(Request, Note),
     add_note(Note, Response),
     reply_json(Response).
 
-delete_notes_handler(Request) :-
+get_note_id(_, options, Request) :-
+    cors_enable(Request, [methods([options, patch])]),
+    reply_json(true), !.
+
+get_note_id(Type, patch, Request) :-
+    cors_enable(Request, [methods([options, patch])]),
+    get_id(Type, Response),
+    reply_json(json{id: Response}).
+
+delete_notes_handler(options, Request) :-
+    cors_enable(Request, [methods([delete, options])]),
+    reply_json(true), !.
+
+delete_notes_handler(delete, Request) :-
     cors_enable(Request, [methods([delete, options])]),
     extract_note_params(Request, ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
     delete_notes(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt, Response),
@@ -38,15 +55,23 @@ get_notes_handler(Request) :-
     maplist(note_to_json, Notes, NotesJson),
     reply_json(json{notes: NotesJson}).
 
-update_note_handler(ID, Request) :-
-    % I think that'll need to change, 'cause it'll not be a number
-    cors_enable(Request, [methods([get, post])]),
+update_note_handler(_, options, Request) :-
+    cors_enable(Request, [methods([options, patch])]),
+    reply_json(true), !.
+
+update_note_handler(ID, patch, Request) :-
+    cors_enable(Request, [methods([options, patch])]),
     atom_number(ID, UID),
     http_read_json_dict(Request, Note),
     update_note(UID, Note, Response),
     reply_json(Response).
-    
-notify_user_handler(Request) :-
+
+notify_user_handler(options, Request) :-
+    cors_enable(Request, [methods([post, options])]),
+    reply_json(true), !.
+
+
+notify_user_handler(post, Request) :-
     cors_enable(Request, [methods([post, options])]),
     http_read_json_dict(Request, NotifyUserWarning),
     notify_user(NotifyUserWarning, Response),
@@ -56,5 +81,6 @@ user_notifications_handler(Request) :-
     cors_enable(Request, [methods([get, options])]),
     extract_user_warning_params(Request, WarningID, WarnedUser),
     get_user_warnings(WarningID, WarnedUser, UserWarnings),
-    maplist(user_warnings_to_json, UserWarnings, UserWarningsJson),
-    reply_json(json{user_warnings: UserWarningsJson}).
+    get_all_warnings_by_userId(UserWarnings, Notes),
+    maplist(note_to_json, Notes, NoteJson),
+    reply_json(json{notes: NoteJson}).

@@ -16,6 +16,9 @@ get_ids_to_validate(IdsValidation) :-
         IdsValidation
     ).
 
+exists_val(ID) :-
+    user_val(ID).
+
 remove_validation(ID) :-
     retract(user_val(ID)),
     save_users_val.

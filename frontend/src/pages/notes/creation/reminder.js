@@ -13,17 +13,17 @@ const Reminder = () => {
   const navigate = useNavigate();
 
   const handleSave = async () => {
-    const noteID = await api.getNoteId("REM");
+    const noteID = await api.getNoteId("rem");
     const user = await api.getUserByField({ unique_key_name: "email", unique_key: auth.user.email })
 
     await api.registerNote({
-      noteId: noteID,
+      id: noteID,
       noteType: "Reminder",
       visibility: "Private",
       title: "",
       subject: "",
       content: content,
-      creator: user,
+      creatorID: user.id,
     })
     const prevPath = location.state?.prevPath;
     prevPath ? navigate(prevPath) : navigate('/');

@@ -11,7 +11,7 @@ add_user(UserJson, Response) :-
     create_json_from_list([name-NameErrors, email-EmailErrors, password-PasswordErrors, type-TypeErrors], is_empty, Errors),
     
     ( (is_empty(Errors), (\+ get_user(_, _, Email, _, _, _, _, _, _)))
-    ->  ((Type = "professor") 
+    ->  ((Type = "Professor") 
         ->  add_user_val_aux(ID)
         ; true
         ),

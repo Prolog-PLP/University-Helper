@@ -16,9 +16,7 @@ const ListUsers = () => {
 
   useEffect(() => {
     api.getDBUsers().then((dbUsers) => {
-      //const activeUsers = dbUsers.filter(user => user.dbIsDeleted !== true);
-      console.log(dbUsers.users);
-      setValidates(dbUsers.users);
+      setValidates(dbUsers);
     });
   }, []);
 
@@ -26,8 +24,8 @@ const ListUsers = () => {
     console.log(rows);
   }, [rows]);
 
-  const updateUser = async (field, newValue, match, matchValue) => {
-    await api.updateUserField({ fieldToUpdate: field, newValue, whereField: match, whereValue: matchValue });
+  const updateUser = async (idUser, newValue, userEmail) => {
+    await api.updateUserField({ "id": idUser, "type": newValue, "email": userEmail});
   };
 
   const setValidates = (activeUsers) => {
@@ -88,14 +86,14 @@ const ListUsers = () => {
   const handleAccessChange = (id, newAccess, email) => {
     // Impede a alteração do nível de acesso se for 'admin'
     const currentAccess = rows.find(row => row.id === id).type;
-    if (currentAccess !== "admin") {
+    if (currentAccess !== "Administrator") {
       const newRows = rows.map((row) => {
         if (row.id === id) {
           return { ...row, type: newAccess };
         }
         return row;
       });
-      updateUser("type", newAccess, "email", email);
+      updateUser(id, newAccess, email);
       setRows(newRows);
     }
   };
@@ -164,12 +162,11 @@ const ListUsers = () => {
           return (
             <Button
               onClick={() => {
-                fetch('http://localhost:8000/api/users/validateUser', {
-                  method: 'POST',
+                fetch(`http://localhost:8000/api/users/validate_user/${params.row.id}`, {
+                  method: 'PATCH',
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  body: JSON.stringify(params.row.id),
                 }
                 )
                 const nRows = rows.map((row) => {
@@ -213,25 +210,25 @@ const ListUsers = () => {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              backgroundColor: params.row.type === "administrator"
+              backgroundColor: params.row.type === "Administrator"
                 ? theme.palette.special.main
                 : theme.palette.secondary.main,
               color: theme.palette.primary.contrastText,
             }}
           >
-            <MenuItem value="administrator" disabled>
+            <MenuItem value="Administrator" disabled>
               <ListItemIcon>
                 <AdminPanelSettingsOutlinedIcon fontSize="small" />
               </ListItemIcon>
               <Typography variant="body2">Admin</Typography>
             </MenuItem>
-            <MenuItem value="professor">
+            <MenuItem value="Professor">
               <ListItemIcon>
                 <SecurityOutlinedIcon fontSize="small" />
               </ListItemIcon>
               <Typography variant="body2">Professor</Typography>
             </MenuItem>
-            <MenuItem value="student">
+            <MenuItem value="Student">
               <ListItemIcon>
                 <LockOpenOutlinedIcon fontSize="small" />
               </ListItemIcon>

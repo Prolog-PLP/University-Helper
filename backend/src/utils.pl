@@ -7,7 +7,7 @@ user_to_json(user(ID, Name, Email, Password, Type, Enrollment, University, Creat
              json{id: ID, name: Name, email: Email, password: Password, type: Type, enrollment: Enrollment, university: University, createdAt: CreatedAt}).
 
 note_to_json(note(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
-json{id: ID, type: Type, visibility:Visibility, title: Title, subject: Subject, content: Content, creatorID: CreatorID, createdAt: CreatedAt, updatedAt: UpdatedAt}).
+            json{id: ID, type: Type, visibility:Visibility, title: Title, subject: Subject, content: Content, creatorID: CreatorID, createdAt: CreatedAt, updatedAt: UpdatedAt}).
 
 user_warnings_to_json(user_warning(WarningID, WarnedUser),
 json{warningID: WarningID, warnedUser: WarnedUser}).
@@ -100,7 +100,7 @@ is_valid_email(Email, '') :-
 is_valid_email(_, 'Email is invalid!').
 
 is_valid_user_type(Type, '') :-
-    member(Type, ["student", "professor", "administrator"]), !.
+    member(Type, ["Student", "Professor", "Administrator"]), !.
 
 is_valid_user_type(_, 'Type is invalid.').
 

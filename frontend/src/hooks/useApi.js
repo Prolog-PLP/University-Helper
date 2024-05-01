@@ -5,14 +5,8 @@ const userService = new UserService();
 const noteService = new NoteService();
 
 export const useApi = () => ({
-  validateUserField: async (field, value) => {
-    return await userService.validateUserField(field, value);
-  },
   validateLogin: async (logInfoSubmission) => {
     return await userService.validateLogin(logInfoSubmission);
-  },
-  isRegistered: async (user) => {
-    return await userService.isRegistered(user);
   },
   registerUser: async (user) => {
     return await userService.registerUser(user);
