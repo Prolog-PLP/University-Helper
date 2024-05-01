@@ -7,10 +7,15 @@ save_notebooks :-
     listing(next_notebook_id),
     told.
 
-add_notebook(ID, Type, Name) :-
-    assertz(notebook(ID, Type, Name)),
-    save_notebooks.
-
+add_notebook(ID, Name, Type, NumPages, PageLength, CreatedAt, UpdatedAt) :-
+    ((nonvar(NumPages), nonvar(PageLength))
+    -> assertz(notebook(ID, Name, Type, NumPages, PageLength, CreatedAt, UpdatedAt))
+    ;  assertz(notebook(ID, Name, Type, CreatedAt, UpdatedAt))
+    ),
+    retract(current_notebook_id(_)), 
+    assertz(current_notebook_id(ID)),
+    save_notebooks, !.
+    
 delete_notebooks(ID, _, _, _, _, _, _) :-
     nonvar(ID),
     retractall(notebook(ID, _, _, _, _)),

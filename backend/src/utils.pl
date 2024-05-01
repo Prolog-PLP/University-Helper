@@ -128,10 +128,14 @@ extract_notify_user_data(NotifyUserWarningJson, WarningID, WarnedUser) :-
     json_member(NotifyUserWarningJson, warningID, WarningID),
     json_member(NotifyUserWarningJson, warnedUser, WarnedUser).
 
-extract_notebook_data(NotebookJson, ID, Name, Type, PageLength, Pages, Subjects, CreatedAt, UpdatedAt) :-
-    Keys = [id, name, type, page_length, pages, subjects, createdAt, updatedAt],
-    Values = [ID, Name, Type, PageLength, Pages, Subjects, CreatedAt, UpdatedAt],
-    maplist(json_member(NotebookJson), Keys, Values).
+extract_notebook_data(NotebookJson, ID, Name, Type, NumPages, PageLength, Pages, Subjects, CreatedAt, UpdatedAt) :-
+    Keys = [id, name, type, numPages, pageLength, pages, subjects, createdAt, updatedAt],
+    Values = [ID, Name, Type, NumPages, PageLength, Pages, Subjects, CreatedAt, UpdatedAt],
+    maplist(json_member(NotebookJson), Keys, Values),
+    ( (nonvar(Pages), var(NumPages))
+    -> length(Pages, NumPages)
+    ; true
+    ).
 
 unify_if_uninstantiated(PossiblyUninstantiatedVar, ValueToUnify) :-
     var(PossiblyUninstantiatedVar),
