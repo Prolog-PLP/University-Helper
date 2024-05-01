@@ -1,14 +1,20 @@
-:- dynamic notebook/3.
+:- dynamic notebook/5.
 
-notebook("3", "teste", "joao").
+notebook(1, "MeuCaderno", "convencional", '01-05-2024 14:22:45', '01-05-2024 14:22:45').
+notebook(2, "MeuCaderno", "convencional", '01-05-2024 14:23:12', '01-05-2024 14:23:12').
+notebook(3, "MeuCaderno", "convencional", '01-05-2024 14:24:51', '01-05-2024 14:24:51').
+notebook(4, "MeuCaderno", "convencional", '01-05-2024 14:28:39', '01-05-2024 14:28:39').
+notebook(5, "MeuCaderno", "convencional", '01-05-2024 14:30:39', '01-05-2024 14:30:39').
 
-:- dynamic current_notebook_id/2.
+:- dynamic notebook/7.
 
-current_notebook_id(convencional, 0).
-current_notebook_id(cronologico, 0).
-current_notebook_id(mental, 0).
+notebook(6, "MeuCaderno", "convencional", 30, 4, '01-05-2024 14:31:10', '01-05-2024 14:31:10').
 
-next_notebook_id(A, B) :-
-    current_notebook_id(A, C),
-    B is C+1.
+:- dynamic current_notebook_id/1.
+
+current_notebook_id(6).
+
+next_notebook_id(A) :-
+    current_notebook_id(B),
+    A is B+1.
 

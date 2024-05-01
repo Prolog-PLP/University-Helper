@@ -1,66 +1,32 @@
 :- consult('../repositories/notebook_repository.pl').
 
-%get_notebooks_handler(Request) :-
-%    find_all_notebooks(Notebooks),
-%    reply_json(json{notebooks: Notebooks}).
-
-% No arquivo 'notebook_controller.pl'
-
-add_notebook(NotebookJson, Result) :-
-    extract_notebook_data(NotebookJson, ID, Type, Name, ExtraData),
-    (   Type = 'conventional'
-    ->  add_conventional_notebook(ID, Name, ExtraData, Result)
-    ;   Type = 'chronological'
-    ->  add_chronological_notebook(ID, Name, ExtraData, Result)
-    ;   Type = 'mental'
-    ->  add_mental_notebook(ID, Name, ExtraData, Result)
-    ;   Result = {response: json{success: false, message: 'Invalid notebook type'}}
+add_notebook(NotebookJson, Response) :-
+    extract_notebook_data(NotebookJson, ID, Name, Type, NumPages, PageLength, _, _, CreatedAt, UpdatedAt),
+    ( add_notebook_aux(ID, Name, Type, NumPages, PageLength, CreatedAt, UpdatedAt)
+    ->  current_notebook_id(CurrentID),
+        format(atom(Message), 'Created notebook with ID ~w successfully.', [CurrentID]),
+        Response = json{success: true, id: CurrentID, message: Message}
+    ;   Response = json{success: false, message: 'Failed to create notebook.'}
     ).
 
-add_conventional_notebook(ID, Name, SubjectsPages, Result) :-
-    assertz(notebook(ID, Name, SubjectsPages)),
-    save_notebooks,
-    Result = {response: json{success: true, message: 'Created Conventional Notebook successfully.'}, id: ID, name: Name, subjectsPages: SubjectsPages}.
-        
-add_chronological_notebook(ID, Name, HasPages, Result) :-
-    assertz(chronological_notebook(ID, Name, HasPages)),
-    save_notebooks,
-    Result = {response: json{success: true, message: 'Created Chronological Notebook successfully.'}, id: ID, name: Name, hasPages: HasPages}.
-        
-add_mental_notebook(ID, Name, Keywords, Result) :-
-    assertz(mental_notebook(ID, Name, Keywords)),
-    save_notebooks,
-    Result = {response: json{success: true, message: 'Created Mental Notebook successfully.'}, id: ID, name: Name, keywords: Keywords}.
-    
+add_notebook_aux(ID, Name, Type, NumPages, PageLength, CreatedAt, UpdatedAt) :-
+    next_notebook_id(ID),
+    get_time(CurrentTime),
+    format_time(atom(CreatedAt), '%d-%m-%Y %H:%M:%S', CurrentTime),
+    UpdatedAt = CreatedAt,
+    add_notebook(ID, Name, Type, NumPages, PageLength, CreatedAt, UpdatedAt).
 
+delete_notebooks(ID, Name, Type, CreatedAt, UpdatedAt, _, _, _, PageLength, _, _, Response) :-
+    delete_notebooks(ID, Name, Type, _, PageLength, CreatedAt, UpdatedAt),
+    Response = json{success: true, message: 'Deleted notebook(s) successfully.'}, !.
 
-delete_notebook_handler(Request) :-
-    extract_notebook_params(Request, ID, Type, _),
-    (   Type = 'chronological'
-    ->  Response = json{success: false, message: 'Cannot delete notes from a Chronological Notebook.'}
-    ;   delete_notebook(ID, Type, _),
-        Response = json{success: true, message: 'Notebook deleted successfully.'}
-    ),
-    reply_json(Response).
+delete_notebooks(_, _, _, _, _, _, _, _, _, _, _, Response) :-
+    Response = json{success: false, errors: json{json: "No such notebook in database."}, message: 'Failed to delete notebook.'}.
 
-update_notebook_handler(Request) :-
-    memberchk(path_info(ID), Request), 
-    http_read_json(Request, JSONData),
-    atom_string(IDAtom, ID),  
-    atom_number(IDAtom, IDNumber),  
-    Type = JSONData.type,
-    Name = JSONData.name,
-    (   update_notebook(IDNumber, Type, Name)
-    ->  Response = json{status: "success", message: "Notebook updated successfully."}
-    ;   Response = json{status: "error", message: "Failed to update notebook."}
-    ),
-    reply_json(Response).
+update_notebook(ID, UpdatedNotebookJson, Response) :-
+    extract_notebook_data(UpdatedNotebookJson, _, Name, _, NumPages, PageLength, _, _, _, _),
+    update_notebook(ID, Name, NumPages, PageLength),
+    Response = json{success: true, message: 'Updated notebook(s) successfully.'}, !.
 
-filter_notebooks(ID, Type, Name, FilteredNotebooks) :-
-    findall(notebook{id: NotebookID, type: NotebookType, name: NotebookName},
-        (   notebook(NotebookID, NotebookType, NotebookName),
-        (   nonvar(ID) -> NotebookID = ID; true ),
-        (   nonvar(Type) -> NotebookType = Type; true ),
-        (   nonvar(Name) -> NotebookName = Name; true )
-        ),
-        FilteredNotebooks).
+update_notebook(_, _, Response) :-
+    Response = json{success: true, message: 'No user(s) were updated by this request.'}.

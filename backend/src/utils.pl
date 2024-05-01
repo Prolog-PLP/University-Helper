@@ -12,6 +12,12 @@ note_to_json(note(ID, Type, Visibility, Title, Subject, Content, CreatorID, Crea
 user_warnings_to_json(user_warning(WarningID, WarnedUser),
 json{warningID: WarningID, warnedUser: WarnedUser}).
 
+notebook_to_json(notebook(ID, Name, Type, CreatedAt, UpdatedAt),
+                 json{ id: ID, type: Type, name: Name, createdAt: CreatedAt, updatedAt: UpdatedAt }) :- !.
+
+notebook_to_json(notebook(ID, Name, Type, NumPages, PageLength, CreatedAt, UpdatedAt),
+json{ id: ID, type: Type, name: Name, num_pages: NumPages, page_length: PageLength, createdAt: CreatedAt, updatedAt: UpdatedAt }).
+
 database_path('backend/database/').
 
 concat_paths(BasePath, PathToConcat, Result) :-
@@ -122,18 +128,14 @@ extract_notify_user_data(NotifyUserWarningJson, WarningID, WarnedUser) :-
     json_member(NotifyUserWarningJson, warningID, WarningID),
     json_member(NotifyUserWarningJson, warnedUser, WarnedUser).
 
-extract_notebook_data(NotebookJson, ID, Type, Name, ExtraData) :-
-    json_member(NotebookJson, id, ID),
-    json_member(NotebookJson, type, Type),
-    json_member(NotebookJson, name, Name),
-    (   Type = 'conventional' -> json_member(NotebookJson, subjects_pages, ExtraData)
-    ;   Type = 'chronological' -> json_member(NotebookJson, has_pages, ExtraData)
-    ;   Type = 'mental' -> json_member(NotebookJson, keywords, ExtraData)
-    ;   ExtraData = []
+extract_notebook_data(NotebookJson, ID, Name, Type, NumPages, PageLength, Pages, Subjects, CreatedAt, UpdatedAt) :-
+    Keys = [id, name, type, numPages, pageLength, pages, subjects, createdAt, updatedAt],
+    Values = [ID, Name, Type, NumPages, PageLength, Pages, Subjects, CreatedAt, UpdatedAt],
+    maplist(json_member(NotebookJson), Keys, Values),
+    ( (nonvar(Pages), var(NumPages))
+    -> length(Pages, NumPages)
+    ; true
     ).
-
-notebook_to_json(notebook(ID, Type, Name), Json) :-
-    Json = json{ id: ID, type: Type, name: Name }.
 
 unify_if_uninstantiated(PossiblyUninstantiatedVar, ValueToUnify) :-
     var(PossiblyUninstantiatedVar),

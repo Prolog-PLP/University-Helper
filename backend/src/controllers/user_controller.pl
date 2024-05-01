@@ -43,7 +43,7 @@ update_user(_, _, Response) :-
 
 delete_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Response) :-
     delete_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
-    Response = json{success: true, message: 'Deleted user(s) successfully.'}.
+    Response = json{success: true, message: 'Deleted user(s) successfully.'}, !.
 
 delete_users(_, _, _, _, _, _, _, _, Response) :-
     Response = json{success: false, errors: json{json: "No such user in database."}, message: 'Failed to delete user.'}.
