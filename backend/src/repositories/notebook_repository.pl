@@ -25,16 +25,18 @@ update_notebook(ID, Type, Name) :-
     assertz(notebook(ID, Type, Name)),
     save_notebooks.
 
-%find_notebook(NotebookID, NotebookData) :-
-%    (   notebook(NotebookID, Type, Name)
-%    ->  NotebookData = notebook{ id: NotebookID, type: Type, name: Name }
-%    ;   NotebookData = null
-%    ).
+get_notebooks5(ID, Type, Name, CreatedAt, UpdatedAt, Notebooks) :-
+    findall(notebook(ID, Type, Name, CreatedAt, UpdatedAt),
+            notebook(ID, Type, Name, CreatedAt, UpdatedAt),
+            Notebooks).
 
-find_all_notebooks(Notebooks) :-
-    findall(notebook{ id: ID, type: Type, name: Name }, notebook(ID, Type, Name), Notebooks).
+get_notebooks7(ID, Type, Name, NumPages, PageLength, CreatedAt, UpdatedAt, Notebooks) :-
+    findall(notebook(ID, Type, Name, NumPages, PageLength, CreatedAt, UpdatedAt),
+            notebook(ID, Type, Name, NumPages, PageLength, CreatedAt, UpdatedAt),
+            Notebooks).
 
-
-conventional_notebook(ID, Name, SubjectsPages).
-chronological_notebook(ID, Name, HasPages).
-mental_notebook(ID, Name, Keywords, ContainedNotebooks).
+get_notebooks(ID, Type, Name, CreatedAt, UpdatedAt, _, _, _, PageLength, _, _, Notebooks) :-
+    get_notebooks5(ID, Type, Name, CreatedAt, UpdatedAt, Notebooks5),
+    get_notebooks7(ID, Type, Name, _, PageLength, CreatedAt, UpdatedAt, Notebooks7),
+    append(Notebooks5, Notebooks7, PartialNotebooks),
+    Notebooks = PartialNotebooks.

@@ -1,14 +1,11 @@
-:- dynamic notebook/3.
+:- dynamic notebook/5.
 
-notebook("3", "teste", "joao").
+:- dynamic notebook/7.
 
-:- dynamic current_notebook_id/2.
+:- dynamic current_notebook_id/1.
 
-current_notebook_id(convencional, 0).
-current_notebook_id(cronologico, 0).
-current_notebook_id(mental, 0).
+current_notebook_id(0).
 
-next_notebook_id(A, B) :-
-    current_notebook_id(A, C),
-    B is C+1.
-
+next_notebook_id(A) :-
+    current_notebook_id(B),
+    A is B+1.

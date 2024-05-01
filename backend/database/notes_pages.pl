@@ -1,0 +1,1 @@
+:- dynamic note_page/7.

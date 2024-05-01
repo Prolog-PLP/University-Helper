@@ -1,29 +1,30 @@
 :- consult('../../controllers/notebook_controller.pl').
 
-extract_notebook_params(Request, ID, Type, Name, ExtraData) :-
+extract_notebook_params(Request, ID, Type, Name, CreatedAt, UpdatedAt, Subjects, MinNumPages, MaxNumPages, PageLength, NotesIDs, NotesSubjects) :-
     http_parameters(Request, [
         id(ID, [integer, optional(true)]),
         type(Type, [string, optional(true)]),
         name(Name, [string, optional(true)]),
-        subjectsPages(SubjectsPages, [list(string), optional(true)]),
-        hasPages(HasPages, [boolean, optional(true)]),
-        keywords(Keywords, [list(string), optional(true)])
-    ]),
-    ExtraData = notebook_extra_data{subjectsPages: SubjectsPages, hasPages: HasPages, keywords: Keywords},
-    format("ID: ~w, Type: ~w, Name: ~w, ExtraData: ~w~n", [ID, Type, Name, ExtraData]).
-
+        createdAt(CreatedAt, [string, optional(true)]),
+        updatedAt(UpdatedAt, [string, optional(true)]),
+        subjects(Subjects, [list(string), optional(true)]),
+        minNumPages(MinNumPages, [integer, optional(true)]),
+        maxNumPages(MaxNumPages, [integer, optional(true)]),
+        pageLength(PageLength, [integer, optional(true)]),
+        notesIDs(NotesIDs, [list(integer), optional(true)]),
+        notesSubjects(NotesSubjects, [list(string), optional(true)])
+    ]).
 
 add_notebook_handler(Request) :-
-    http_read_json_dict(Request, Notebook),
-    extract_notebook_params(Request, ID, Type, Name, ExtraData),
-    add_notebook(ID, Type, Name, ExtraData, Response), 
+    http_read_json_dict(Request, NotebookJson),
+    add_notebook(NotebookJson, Response), 
     reply_json(Response).
 
 get_notebooks_handler(Request) :-
-    extract_notebook_params(Request, ID, Type, Name),
-    filter_notebooks(ID, Type, Name, Notebooks),
+    extract_notebook_params(Request, ID, Type, Name, CreatedAt, UpdatedAt, Subjects, MinNumPages, MaxNumPages, PageLength, NotesIDs, NotesSubjects),
+    get_notebooks(ID, Type, Name, CreatedAt, UpdatedAt, Subjects, MinNumPages, MaxNumPages, PageLength, NotesIDs, NotesSubjects, Notebooks),
     maplist(notebook_to_json, Notebooks, NotebooksJson),
-    reply_json(NotebooksJson).
+    reply_json(json{notebooks: NotebooksJson}).
 
 update_notebook_handler(ID, Request) :-
     atom_number(ID, UID),

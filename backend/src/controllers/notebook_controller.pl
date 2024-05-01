@@ -1,11 +1,5 @@
 :- consult('../repositories/notebook_repository.pl').
 
-%get_notebooks_handler(Request) :-
-%    find_all_notebooks(Notebooks),
-%    reply_json(json{notebooks: Notebooks}).
-
-% No arquivo 'notebook_controller.pl'
-
 add_notebook(NotebookJson, Result) :-
     extract_notebook_data(NotebookJson, ID, Type, Name, ExtraData),
     (   Type = 'conventional'
@@ -31,8 +25,6 @@ add_mental_notebook(ID, Name, Keywords, Result) :-
     assertz(mental_notebook(ID, Name, Keywords)),
     save_notebooks,
     Result = {response: json{success: true, message: 'Created Mental Notebook successfully.'}, id: ID, name: Name, keywords: Keywords}.
-    
-
 
 delete_notebook_handler(Request) :-
     extract_notebook_params(Request, ID, Type, _),
@@ -55,12 +47,3 @@ update_notebook_handler(Request) :-
     ;   Response = json{status: "error", message: "Failed to update notebook."}
     ),
     reply_json(Response).
-
-filter_notebooks(ID, Type, Name, FilteredNotebooks) :-
-    findall(notebook{id: NotebookID, type: NotebookType, name: NotebookName},
-        (   notebook(NotebookID, NotebookType, NotebookName),
-        (   nonvar(ID) -> NotebookID = ID; true ),
-        (   nonvar(Type) -> NotebookType = Type; true ),
-        (   nonvar(Name) -> NotebookName = Name; true )
-        ),
-        FilteredNotebooks).
