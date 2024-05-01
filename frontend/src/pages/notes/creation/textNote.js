@@ -16,17 +16,17 @@ const TextNote = () => {
 
   const handleSave = async () => {
 
-    const noteID = await api.getNoteId("PLT");
+    const noteID = await api.getNoteId("plt");
     const user = await api.getUserByField({ unique_key_name: "email", unique_key: auth.user.email })
 
     await api.registerNote({
-      noteId: noteID,
-      noteType: "PlainText",
+      id: noteID,
+      type: "PlainText",
       visibility: title === "" ? "Private" : (isPublic ? "Public" : "Private"),
       title: title,
-      subject: '',
+      subject: "",
       content: content,
-      creator: user,
+      creatorID: user.id,
     })
     const prevPath = location.state?.prevPath;
     prevPath ? navigate(prevPath) : navigate('/');

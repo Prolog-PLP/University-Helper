@@ -7,7 +7,7 @@ extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, Univer
         name(Name, [string, optional(true)]),
         email(Email, [string, optional(true)]),
         password(Password, [string, optional(true)]),
-        type(Type, [string, optional(true), oneof(["student", "administrator", "professor"])]),
+        type(Type, [string, optional(true), oneof(["Student", "Administrator", "Professor"])]),
         enrollment(Enrollment, [string, optional(true)]),
         university(University, [string, optional(true)]),
         createdAt(CreatedAt, [string, optional(true)])
@@ -22,29 +22,51 @@ user_exists_handler(Request) :-
 user_exists_handler(_) :-
     reply_json(false).
 
-add_user_handler(Request) :-
+add_user_handler(post, Request) :-
     cors_enable(Request, [methods([post, options])]),
     http_read_json_dict(Request, User),
     add_user(User, Response),
     reply_json(Response).
 
-update_user_handler(ID, Request) :-
+add_user_handler(options, Request) :-
+    cors_enable(Request, [methods([post, options])]),
+    reply_json(true), !.
+
+update_user_handler(ID, patch, Request) :-
     cors_enable(Request, [methods([patch, options])]),
     atom_number(ID, UID),
     http_read_json_dict(Request, User),
     update_user(UID, User, Response),
     reply_json(Response).
 
-delete_users_handler(Request) :-
+update_user_handler(_, options, Request) :-
+    cors_enable(Request, [methods([patch, options])]),
+    reply_json(true), !.
+
+delete_users_handler(delete, Request) :-
     cors_enable(Request, [methods([options, delete])]),
     extract_user_params(Request, ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
+    ((exists_val(ID)) 
+    -> 
+        remove_validation(ID)
+    ;   true
+    ),
     delete_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Response),
     reply_json(Response).
 
-validate_user_handler(ID, Request) :-
+delete_users_handler(options, Request) :-
+    cors_enable(Request, [methods([options, delete])]),
+    reply_json(true), !.
+
+validate_user_handler(patch, ID, Request) :-
     cors_enable(Request, [methods([patch, options])]),
     atom_number(ID, UID),
-    remove_validation(UID).
+    remove_validation(UID),
+    reply_json(true).
+
+validate_user_handler(options, _, Request) :-
+    cors_enable(Request, [methods([patch, options])]), 
+    reply_json(true), !.
 
 unvalidate_user_handler(Request) :-
     cors_enable(Request, [methods([patch, options])]),

@@ -18,24 +18,24 @@ const Warning = () => {
   useEffect(() => {
     const fetchData = async () => {
       const users = await api.getDBUsers();
-      const newU = users.filter(user => user.dbIsDeleted !== true)
       setDbUsersList(users);
     };
     fetchData();
   }, []);
 
   const handleSave = async () => {
-    const noteID = await api.getNoteId("WAR");
+    const noteID = await api.getNoteId("war");
     const creator = await api.getUserByField({ unique_key_name: "email", unique_key: auth.user.email });
+    console.log(noteID);
 
     await api.registerNote({
-      noteId: noteID,
-      noteType: "Warning",
+      id: noteID,
+      type: "Warning",
       visibility: "Private",
       title: title,
       subject: "",
       content: warning,
-      creator: creator,
+      creatorID: creator.id,
       warnedUser: selectedUser
     })
     const prevPath = location.state?.prevPath;
@@ -91,7 +91,7 @@ const Warning = () => {
             fullWidth
             multiline
             rows={8}
-            id="warning"
+            id="Warning"
             label="Aviso"
             name="warning"
             value={warning}

@@ -11,7 +11,7 @@ add_user(UserJson, Response) :-
     create_json_from_list([name-NameErrors, email-EmailErrors, password-PasswordErrors, type-TypeErrors], is_empty, Errors),
     
     ( (is_empty(Errors), (\+ get_user(_, _, Email, _, _, _, _, _, _)))
-    ->  ((Type = "professor") 
+    ->  ((Type = "Professor") 
         ->  add_user_val_aux(ID)
         ; true
         ),
@@ -36,7 +36,7 @@ add_user_aux(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt)
 update_user(ID, UpdatedUserJson, Response) :-
     extract_user_data(UpdatedUserJson, _, Name, Email, Password, Type, Enrollment, University, _),
     update_user(ID, Name, Email, Password, Type, Enrollment, University),
-    Response = json{success: true, message: 'Updated user(s) successfully.'}.
+    Response = json{success: true, message: 'Updated user(s) successfully.'}, !.
 
 update_user(_, _, Response) :-
     Response = json{success: true, message: 'No user(s) were updated by this request.'}.
