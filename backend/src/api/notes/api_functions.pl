@@ -55,9 +55,12 @@ get_notes_handler(Request) :-
     maplist(note_to_json, Notes, NotesJson),
     reply_json(json{notes: NotesJson}).
 
-update_note_handler(ID, Request) :-
-    % I think that'll need to change, 'cause it'll not be a number
-    cors_enable(Request, [methods([get, post])]),
+update_note_handler(_, options, Request) :-
+    cors_enable(Request, [methods([options, post])]),
+    reply_json(true), !.
+
+update_note_handler(ID, post, Request) :-
+    cors_enable(Request, [methods([options, post])]),
     atom_number(ID, UID),
     http_read_json_dict(Request, Note),
     update_note(UID, Note, Response),
