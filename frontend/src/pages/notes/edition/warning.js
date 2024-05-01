@@ -14,14 +14,7 @@ const Warning = ({ note }) => {
   const [dbUsersList, setDbUsersList] = useState([]);
   const isReadOnly = location.state?.readOnly ?? false;
 
-  // Atualiza os estados quando o componente recebe uma nova 'note'
-  useEffect(() => {
-    if (note) {
-      setTitle(note.title);
-      setWarning(note.content); // Supondo que 'content' é a propriedade do aviso
-    }
-  }, [note]);
-
+  /* eslint-disable */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -35,9 +28,22 @@ const Warning = ({ note }) => {
     fetchData();
   }, []);
 
+  /* eslint-disable */
   useEffect(() => {
-    // Deixar isso aqui para atualizar quando o dbUsersList modificar
-  }, [dbUsersList])
+    const fetchData = async () => {
+      if (note) {
+        try {
+          const newNote = await api.getNoteWarningById(note.id);
+          setSelectedUser(dbUsersList.find(user => user.id === newNote.notes[0].warnedUser));
+          setTitle(note.title);
+          setWarning(note.content);
+        } catch (error) {
+          console.error("Error fetching user warnings and configurations:", error);
+        }
+      }
+    };
+    fetchData();
+  }, [note, dbUsersList]);
 
   const handleSave = async () => {
     note.content = warning;
