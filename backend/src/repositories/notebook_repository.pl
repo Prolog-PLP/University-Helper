@@ -21,8 +21,8 @@ delete_notebooks(ID, _, _, _, _, _, _) :-
     retractall(notebook(ID, _, _, _, _)),
     retractall(notebook(ID, _, _, _, _, _, _)),
     retractall(notebook_subject(ID, _, _, _)),
-    retractall(note_page(ID, _, _, _, _, _, _)),
-    retractall(notebook_page(ID, _, _, _, _, _, _)),
+    retractall(note_page(ID, _, _)),
+    retractall(notebook_page(ID, _, _)),
     save_notebooks, !.
 
 delete_notebooks(ID, Name, Type, NumPages, PageLength, CreatedAt, UpdatedAt) :-
@@ -35,9 +35,24 @@ delete_notebooks_entries([ID | Tail]) :-
     delete_notebooks(ID, _, _, _, _, _, _),
     delete_notebooks_entries(Tail).
 
-update_notebook(ID, Name, Type) :-
-    retract(notebook(ID, _, _)),
-    assertz(notebook(ID, Name, Type)),
+update_notebook(ID, Name, NumPages, PageLength) :-
+    retract(notebook(ID, OldName, OldType, OldNumPages, OldPageLength, OldCreatedAt, _)),
+    maplist(unify_if_uninstantiated,
+            [Name, NumPages, PageLength],
+            [OldName,  OldNumPages, OldPageLength]),
+    get_time(CurrentTime),
+    format_time(atom(UpdatedAt), '%d-%m-%Y %H:%M:%S', CurrentTime),
+    assertz(notebook(ID, Name, OldType, NumPages, PageLength, OldCreatedAt, UpdatedAt)),
+    save_notebooks, !.
+
+update_notebook(ID, Name, _, _) :-
+    retract(notebook(ID, OldName, OldType, OldCreatedAt, _)),
+    maplist(unify_if_uninstantiated,
+            [Name],
+            [OldName]),
+    get_time(CurrentTime),
+    format_time(atom(UpdatedAt), '%d-%m-%Y %H:%M:%S', CurrentTime),
+    assertz(notebook(ID, Name, OldType, OldCreatedAt, UpdatedAt)),
     save_notebooks.
 
 get_notebooks5(ID, Name, Type, CreatedAt, UpdatedAt, Notebooks) :-

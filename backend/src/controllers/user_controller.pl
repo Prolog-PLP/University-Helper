@@ -36,14 +36,14 @@ add_user_aux(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt)
 update_user(ID, UpdatedUserJson, Response) :-
     extract_user_data(UpdatedUserJson, _, Name, Email, Password, Type, Enrollment, University, _),
     update_user(ID, Name, Email, Password, Type, Enrollment, University),
-    Response = json{success: true, message: 'Updated user(s) successfully.'}.
+    Response = json{success: true, message: 'Updated user(s) successfully.'}, !.
 
 update_user(_, _, Response) :-
     Response = json{success: true, message: 'No user(s) were updated by this request.'}.
 
 delete_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt, Response) :-
     delete_users(ID, Name, Email, Password, Type, Enrollment, University, CreatedAt),
-    Response = json{success: true, message: 'Deleted user(s) successfully.'}.
+    Response = json{success: true, message: 'Deleted user(s) successfully.'}, !.
 
 delete_users(_, _, _, _, _, _, _, _, Response) :-
     Response = json{success: false, errors: json{json: "No such user in database."}, message: 'Failed to delete user.'}.

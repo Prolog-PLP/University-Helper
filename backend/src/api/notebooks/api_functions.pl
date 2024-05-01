@@ -28,8 +28,8 @@ get_notebooks_handler(Request) :-
 
 update_notebook_handler(ID, Request) :-
     atom_number(ID, UID),
-    http_read_json_dict(Request, Notebook),
-    update_notebook(UID, Notebook, Response),
+    http_read_json_dict(Request, NotebookJson),
+    update_notebook(UID, NotebookJson, Response),
     reply_json(Response).
 
 delete_notebook_handler(Request) :-
