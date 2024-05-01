@@ -75,7 +75,8 @@ export default class NoteService {
         'Content-Type': 'application/json',
       },
     });
-    return await response.json();
+    const responseData = await response.json();
+    return responseData.notes;
   }
 
   async getUserWarnings(userId) {

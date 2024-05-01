@@ -17,6 +17,7 @@ export default function ListNotesWithEdit() {
         const dbUserSession = users.find(user => user.email === auth.user.email);
         const jsonData = await api.getNotesByCreatorId(dbUserSession.id);
         setData(jsonData);
+        console.log(jsonData);
       } catch (error) {
         console.error('Error fetching notes:', error);
       }
@@ -36,7 +37,7 @@ export default function ListNotesWithEdit() {
   return (
     <Box sx={{ flexGrow: 1, p: 2 }}>
       <Grid container spacing={2}>
-        {data.map((currentNote, i) => (
+        {Array.isArray(data) && data.map((currentNote, i) => (
           <Grid key={i} xs={12} sm={6} md={4} lg={3} minHeight={160}>
             <NoteCardWithEdit note={currentNote} updateData={updateData} />
           </Grid>

@@ -99,7 +99,7 @@ const Warning = ({ note }) => {
             fullWidth
             multiline
             rows={8}
-            id="warning"
+            id="Warning"
             label="Aviso"
             name="warning"
             value={warning}
