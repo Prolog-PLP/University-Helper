@@ -30,19 +30,11 @@ const router = createBrowserRouter(
       <Route element={<ProtectedRoutes allowedRoles={["Administrator", "Professor", "Student"]} />}>
         <Route path="note-list">
           <Route index element={<ListNotesWithEdit />} />
-          <Route path='user-warnings' element={<ListNotesReadOnly />} />
+          <Route path='user-warnings' element={<ListNotesReadOnly warningsEnabled={true}/>} />
         </Route>
         <Route path="note-edition" element={<EditNote />} />
+        <Route path='public-notes' element={<ListNotesReadOnly warningsEnabled={false} />} />
       </Route>
-
-      {/* Please, remove the admin from the list! */}
-      <Route element={<ProtectedRoutes allowedRoles={["Administrator", "Professor", "Student"]} />}>
-        <Route path="Warnings" element={<ListNotesReadOnly />} />
-      </Route>
-
-      {/* <Route path="admin" element={<Album />}/> */}
-
-      {/*<Route path='*' element={<NotFoundPage />}/>*/}
     </Route>
   )
 );

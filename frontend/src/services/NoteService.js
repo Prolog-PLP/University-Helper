@@ -61,9 +61,6 @@ export default class NoteService {
       },
       body: JSON.stringify(note),
     });
-    //if (note.type === 'Warning') {
-    //  await this.warnUser({ warningID: note.id, warnedUser: warnedUser.id });
-    //}
   }
 
   async getNotesByCreatorId(userId) {
@@ -100,5 +97,16 @@ export default class NoteService {
     });
     const responseData = await response.json();
     return responseData;
+  }
+
+  async getNotes() {
+    const response = await fetch(getAllNotesRoute, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const responseData = await response.json();
+    return responseData.notes;
   }
 }

@@ -8,7 +8,6 @@ import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import TextNote from './textNote';
 import Warning from './warning';
 import Reminder from './reminder';
-// Change to mockDataReminder or mockDataWarning to see all cases
 import { blue, red } from "@mui/material/colors";
 import { useLocation } from 'react-router-dom';
 

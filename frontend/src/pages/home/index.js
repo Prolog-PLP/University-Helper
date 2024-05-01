@@ -45,7 +45,7 @@ const HomePage = () => {
           </Link>
         </Grid>
         <Grid xs={4}>
-          <Link to="note-creation">
+          <Link to="public-notes">
             <div className={styles.card}>
               <PeopleAltOutlinedIcon fontSize="large" />
               <strong><small>Notas públicas</small></strong>

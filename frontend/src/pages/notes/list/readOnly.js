@@ -5,7 +5,7 @@ import { useApi } from '../../../hooks/useApi';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../../hooks/useAuth';
 
-export default function ListNotesReadOnly() {
+export default function ListNotesReadOnly({ warningsEnabled }) {
   const [data, setData] = useState([]);
   const api = useApi();
   const auth = useAuth();
@@ -15,7 +15,15 @@ export default function ListNotesReadOnly() {
       try {
         const users = await api.getDBUsers();
         const dbUserSession = users.find(user => user.email === auth.user.email);
-        const jsonData = await api.getUserWarnings(dbUserSession.id);
+        let jsonData = [];
+        if (warningsEnabled === true) {
+          jsonData = await api.getUserWarnings(dbUserSession.id);
+        } else {
+          const allNotes = await api.getNotes();
+          console.log(allNotes)
+          jsonData = allNotes.filter(note => note.type !== "Warning" && note.visibility === "Public");
+        }
+  
         console.log(jsonData);
         setData(jsonData);
       } catch (error) {
