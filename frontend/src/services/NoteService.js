@@ -1,7 +1,7 @@
 const apiNotesURL = process.env.REACT_APP_API + "/notes"
 const getAllNotesRoute = apiNotesURL + "/";
 const getNoteIdRoute = apiNotesURL + "/getId"
-const removeNoteRoute = apiNotesURL + "/removeNote"
+const removeNoteRoute = apiNotesURL + "/delete"
 const registerNoteRoute = apiNotesURL + "/add"
 const updateNoteRoute = apiNotesURL + "/updateANote"
 const notifyUserRoute = apiNotesURL + "/notifyUser"
@@ -21,12 +21,11 @@ export default class NoteService {
   }
 
   async removeNote(note) {
-    await fetch(removeNoteRoute, {
-      method: 'POST',
+    await fetch(removeNoteRoute + `?id=${note.id}`, {
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(note),
     })
   }
 

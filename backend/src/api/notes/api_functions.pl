@@ -38,7 +38,11 @@ get_note_id(Type, patch, Request) :-
     get_id(Type, Response),
     reply_json(json{id: Response}).
 
-delete_notes_handler(Request) :-
+delete_notes_handler(options, Request) :-
+    cors_enable(Request, [methods([delete, options])]),
+    reply_json(true), !.
+
+delete_notes_handler(delete, Request) :-
     cors_enable(Request, [methods([delete, options])]),
     extract_note_params(Request, ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
     delete_notes(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt, Response),

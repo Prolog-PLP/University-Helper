@@ -73,7 +73,7 @@ const Warning = ({ note }) => {
             </MenuItem>
             {dbUsersList.map((dbUser) => (
               <MenuItem key={dbUser.id} value={dbUser}>
-                {dbUser.dbUserName}
+                {dbUser.name}
               </MenuItem>
             ))}
           </Select>
@@ -99,7 +99,7 @@ const Warning = ({ note }) => {
             fullWidth
             multiline
             rows={8}
-            id="Warning"
+            id="warning"
             label="Aviso"
             name="warning"
             value={warning}
