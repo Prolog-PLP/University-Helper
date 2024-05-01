@@ -7,8 +7,8 @@ add_note(NoteJson, Response) :-
     create_json_from_list([title-TitleErrors], is_empty, Errors),
     (   (is_empty(Errors))
     ->  
-        ((var(Subject) -> Subject = "")),
-        ((var(UpdatedAt) -> UpdatedAt = "")),
+        ((var(Subject) -> Subject = "" ; true)),
+        ((var(UpdatedAt) -> UpdatedAt = "" ; true )),
         add_note_aux(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt),
         id_type(Type, IdType),
         current_note_id(IdType, CurrentID),
