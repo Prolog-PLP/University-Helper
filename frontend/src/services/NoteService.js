@@ -90,8 +90,8 @@ export default class NoteService {
     return responseData.notes;
   }
 
-  async getWarnedUserByWarningID(warningID) {
-    const url = userNotificationsRoute + `?warningID=${warningID}`;
+  async getNoteWarningById(noteID) {
+    const url = userNotificationsRoute + `?warningID=${noteID}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {

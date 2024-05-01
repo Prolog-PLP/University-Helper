@@ -33,9 +33,8 @@ const Warning = ({ note }) => {
     const fetchData = async () => {
       if (note) {
         try {
-          const currentUserID = await api.getWarnedUserByWarningID(note.id);
-          const currentUser = await api.getUserByField(currentUserID);
-          setSelectedUser(dbUsersList.find(user => user.id === currentUser.id));
+          const newNote = await api.getNoteWarningById(note.id);
+          setSelectedUser(dbUsersList.find(user => user.id === newNote.notes[0].warnedUser));
           setTitle(note.title);
           setWarning(note.content);
         } catch (error) {

@@ -24,8 +24,10 @@ const router = createBrowserRouter(
         <Route path="admin" element={<AdminPage />} />
       </Route>
 
-      <Route element={<ProtectedRoutes allowedRoles={["Administrator", "Professor", "Student"]} />}>
+      <Route element={<ProtectedRoutes allowedRoles={["Professor", "Student"]} />}>
         <Route path="note-creation" element={<NoteCreationPage />} />
+      </Route>
+      <Route element={<ProtectedRoutes allowedRoles={["Administrator", "Professor", "Student"]} />}>
         <Route path="note-list">
           <Route index element={<ListNotesWithEdit />} />
           <Route path='user-warnings' element={<ListNotesReadOnly />} />
