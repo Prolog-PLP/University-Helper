@@ -15,3 +15,9 @@ get_user_warnings(WarningID, WarnedUser, UserWarnings) :-
         user_warning(WarningID, WarnedUser),
         UserWarnings
     ).
+
+get_all_warnings_by_userId([], []).
+
+get_all_warnings_by_userId([user_warning(ID, _)|Tail], [WarH|WarT]) :-
+    get_note(ID, "Warning", _, _, _, _, _, _, _, WarH),
+    get_all_warnings_by_userId(Tail, WarT).

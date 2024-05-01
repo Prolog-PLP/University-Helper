@@ -27,7 +27,7 @@ export default function NoteCardReadOnly({ note }) {
   };
 
   // Escolhe o ícone e a cor com base no tipo de anotação
-  const { icon, color } = tagStyles[note.noteType] || { icon: null, color: 'grey' };
+  const { icon, color } = tagStyles[note.type] || { icon: null, color: 'grey' };
 
   return (
     <Box sx={{ minWidth: 275, position: 'relative', mb: 2 }}>
@@ -49,7 +49,7 @@ export default function NoteCardReadOnly({ note }) {
       >
         {icon}
         <Typography variant="caption" sx={{ fontWeight: 'bold' }}>
-          {(note.noteType).toUpperCase()}
+          {(note.type).toUpperCase()}
         </Typography>
       </Box>
       <Card variant="outlined" sx={{ pt: 7 }}>
@@ -65,7 +65,7 @@ export default function NoteCardReadOnly({ note }) {
               maxWidth: '100%',
             }}
           >
-            {note.noteType === 'Reminder' ? note.content : note.title}
+            {note.type === 'Reminder' ? note.content : note.title}
           </Typography>
         </CardContent>
         <CardActions>
