@@ -26,14 +26,12 @@ add_mental_notebook(ID, Name, Keywords, Result) :-
     save_notebooks,
     Result = {response: json{success: true, message: 'Created Mental Notebook successfully.'}, id: ID, name: Name, keywords: Keywords}.
 
-delete_notebook_handler(Request) :-
-    extract_notebook_params(Request, ID, Type, _),
-    (   Type = 'chronological'
-    ->  Response = json{success: false, message: 'Cannot delete notes from a Chronological Notebook.'}
-    ;   delete_notebook(ID, Type, _),
-        Response = json{success: true, message: 'Notebook deleted successfully.'}
-    ),
-    reply_json(Response).
+delete_notebooks(ID, Name, Type, CreatedAt, UpdatedAt, _, _, _, PageLength, _, _, Response) :-
+    delete_notebooks(ID, Name, Type, _, PageLength, CreatedAt, UpdatedAt),
+    Response = json{success: true, message: 'Deleted notebook(s) successfully.'}.
+
+delete_notebooks(_, _, _, _, _, _, _, _, _, _, _, Response) :-
+    Response = json{success: false, errors: json{json: "No such notebook in database."}, message: 'Failed to delete notebook.'}.
 
 update_notebook_handler(Request) :-
     memberchk(path_info(ID), Request), 

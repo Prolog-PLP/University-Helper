@@ -12,10 +12,10 @@ json{id: ID, type: Type, visibility:Visibility, title: Title, subject: Subject, 
 user_warnings_to_json(user_warning(WarningID, WarnedUser),
 json{warningID: WarningID, warnedUser: WarnedUser}).
 
-notebook_to_json(notebook(ID, Type, Name, CreatedAt, UpdatedAt),
+notebook_to_json(notebook(ID, Name, Type, CreatedAt, UpdatedAt),
                  json{ id: ID, type: Type, name: Name, createdAt: CreatedAt, updatedAt: UpdatedAt }) :- !.
 
-notebook_to_json(notebook(ID, Type, Name, NumPages, PageLength, CreatedAt, UpdatedAt),
+notebook_to_json(notebook(ID, Name, Type, NumPages, PageLength, CreatedAt, UpdatedAt),
 json{ id: ID, type: Type, name: Name, num_pages: NumPages, page_length: PageLength, createdAt: CreatedAt, updatedAt: UpdatedAt }).
 
 database_path('backend/database/').
@@ -128,9 +128,9 @@ extract_notify_user_data(NotifyUserWarningJson, WarningID, WarnedUser) :-
     json_member(NotifyUserWarningJson, warningID, WarningID),
     json_member(NotifyUserWarningJson, warnedUser, WarnedUser).
 
-extract_notebook_data(NotebookJson, ID, Type, Name, PageLength, Pages, Subjects, CreatedAt, UpdatedAt) :-
-    Keys = [id, type, name, page_length, pages, subjects, createdAt, updatedAt],
-    Values = [ID, Type, Name, PageLength, Pages, Subjects, CreatedAt, UpdatedAt],
+extract_notebook_data(NotebookJson, ID, Name, Type, PageLength, Pages, Subjects, CreatedAt, UpdatedAt) :-
+    Keys = [id, name, type, page_length, pages, subjects, createdAt, updatedAt],
+    Values = [ID, Name, Type, PageLength, Pages, Subjects, CreatedAt, UpdatedAt],
     maplist(json_member(NotebookJson), Keys, Values).
 
 unify_if_uninstantiated(PossiblyUninstantiatedVar, ValueToUnify) :-
