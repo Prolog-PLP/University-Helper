@@ -81,5 +81,6 @@ user_notifications_handler(Request) :-
     cors_enable(Request, [methods([get, options])]),
     extract_user_warning_params(Request, WarningID, WarnedUser),
     get_user_warnings(WarningID, WarnedUser, UserWarnings),
-    maplist(user_warnings_to_json, UserWarnings, UserWarningsJson),
-    reply_json(json{user_warnings: UserWarningsJson}).
+    get_all_warnings_by_userId(UserWarnings, Notes),
+    maplist(note_to_json, Notes, NoteJson),
+    reply_json(json{notes: NoteJson}).

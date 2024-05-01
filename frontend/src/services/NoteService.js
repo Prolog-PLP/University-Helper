@@ -79,8 +79,7 @@ export default class NoteService {
   }
 
   async getUserWarnings(userId) {
-    const queryParams = new URLSearchParams({ dbUserId: userId }).toString();
-    const url = userNotificationsRoute + `?${queryParams}`;
+    const url = userNotificationsRoute + `?warnedUser=${userId}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
