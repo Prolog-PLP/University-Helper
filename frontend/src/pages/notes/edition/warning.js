@@ -26,8 +26,8 @@ const Warning = ({ note }) => {
     const fetchData = async () => {
       try {
         const users = await api.getDBUsers();
-        const newU = users.filter(user => user.dbIsDeleted !== true)
-        setDbUsersList(newU);
+
+        setDbUsersList(users);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -72,7 +72,7 @@ const Warning = ({ note }) => {
               <em>Selecione um usuário</em>
             </MenuItem>
             {dbUsersList.map((dbUser) => (
-              <MenuItem key={dbUser.dbUserId} value={dbUser}>
+              <MenuItem key={dbUser.id} value={dbUser}>
                 {dbUser.dbUserName}
               </MenuItem>
             ))}

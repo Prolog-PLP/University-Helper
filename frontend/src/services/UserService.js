@@ -4,7 +4,6 @@ const apiUsersURL = process.env.REACT_APP_API + "/users"
 const getAllUsersRoute = apiUsersURL + "/"
 const registerRoute = apiUsersURL + "/add";
 // this route has changed
-const dbUsersRoute = apiUsersURL + "/";
 const getValidUsers = apiUsersURL + "/validated_users";
 const getUnvalidUsers = apiUsersURL + "/unvalidated_users";
 const updateUserRoute = apiUsersURL + "/update";
@@ -48,7 +47,7 @@ export default class UserService {
 
     // get users 
     async getDBUsers() {
-        const response = await fetch(dbUsersRoute, {
+        const response = await fetch(getAllUsersRoute, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -59,7 +58,8 @@ export default class UserService {
             throw new Error('Failed to fetch users.');
         }
 
-        return await response.json();
+        const responseData = await response.json();
+        return responseData.users;
     }
 
     // already valid users
@@ -135,8 +135,8 @@ export default class UserService {
     }
 
     async getUserByField(data) {
-        const queryParams = new URLSearchParams(data).toString();
-        const url = getUserByFieldRoute + `?${queryParams}`;
+        const queryParams = `${data.unique_key_name}=${data.unique_key}`;
+        const url = getAllUsersRoute + `?${queryParams}`;
 
         const response = await fetch(url, {
             method: 'GET',
@@ -149,7 +149,8 @@ export default class UserService {
             throw new Error('Failed to fetch user field.');
         }
 
-        return await response.json();
+        const responseData = await response.json();
+        return responseData.users[0];
     }
 
 }

@@ -19,11 +19,24 @@ extract_user_warning_params(Request, WarningID, WarnedUser) :-
         warnedUser(WarnedUser, [integer, optional(true)])
     ]).
 
-add_note_handler(Request) :-
-    cors_enable(Request, [methods([add, options])]),
+add_note_handler(options, Request) :-
+    cors_enable(Request, [methods([post, options])]),
+    reply_json(true), !.
+
+add_note_handler(post, Request) :-
+    cors_enable(Request, [methods([post, options])]),
     http_read_json_dict(Request, Note),
     add_note(Note, Response),
     reply_json(Response).
+
+get_note_id(_, options, Request) :-
+    cors_enable(Request, [methods([options, patch])]),
+    reply_json(true), !.
+
+get_note_id(Type, patch, Request) :-
+    cors_enable(Request, [methods([options, patch])]),
+    get_id(Type, Response),
+    reply_json(json{id: Response}).
 
 delete_notes_handler(Request) :-
     cors_enable(Request, [methods([delete, options])]),
@@ -45,8 +58,13 @@ update_note_handler(ID, Request) :-
     http_read_json_dict(Request, Note),
     update_note(UID, Note, Response),
     reply_json(Response).
-    
-notify_user_handler(Request) :-
+
+notify_user_handler(options, Request) :-
+    cors_enable(Request, [methods([post, options])]),
+    reply_json(true), !.
+
+
+notify_user_handler(post, Request) :-
     cors_enable(Request, [methods([post, options])]),
     http_read_json_dict(Request, NotifyUserWarning),
     notify_user(NotifyUserWarning, Response),

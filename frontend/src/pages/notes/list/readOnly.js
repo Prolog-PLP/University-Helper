@@ -14,8 +14,8 @@ export default function ListNotesReadOnly() {
     const fetchData = async () => {
       try {
         const users = await api.getDBUsers();
-        const dbUserSession = users.find(user => user.dbUserEmail === auth.user.email);
-        const jsonData = await api.getUserWarnings(dbUserSession.dbUserId);
+        const dbUserSession = users.find(user => user.email === auth.user.email);
+        const jsonData = await api.getUserWarnings(dbUserSession.id);
         setData(jsonData);
       } catch (error) {
         console.error('Error fetching notes:', error);

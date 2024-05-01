@@ -21,6 +21,9 @@ id_type("PlainText", plt).
 id_type("Reminder", rem).
 id_type(_, _).
 
+get_id(Type, Response) :-
+    next_note_id(Type, Response).
+
 add_note_aux(ID, Type, Visibility, Title, Subject, Content, CreatorID, CreatedAt, UpdatedAt) :-
     id_type(Type, IdType),
     next_note_id(IdType, ID),

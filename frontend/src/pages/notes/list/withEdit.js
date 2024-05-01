@@ -14,8 +14,8 @@ export default function ListNotesWithEdit() {
     const fetchData = async () => {
       try {
         const users = await api.getDBUsers();
-        const dbUserSession = users.find(user => user.dbUserEmail === auth.user.email);
-        const jsonData = await api.getNotesByCreatorId(dbUserSession.dbUserId);
+        const dbUserSession = users.find(user => user.email === auth.user.email);
+        const jsonData = await api.getNotesByCreatorId(dbUserSession.id);
         setData(jsonData);
       } catch (error) {
         console.error('Error fetching notes:', error);
@@ -29,7 +29,7 @@ export default function ListNotesWithEdit() {
   }, [data]);
 
   const updateData = (noteToRemove) => {
-    const updatedData = data.filter(note => note.noteId !== noteToRemove.noteId);
+    const updatedData = data.filter(note => note.id !== noteToRemove.id);
     setData(updatedData);
   };
 

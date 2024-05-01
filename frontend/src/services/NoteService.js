@@ -1,7 +1,8 @@
 const apiNotesURL = process.env.REACT_APP_API + "/notes"
+const getAllNotesRoute = apiNotesURL + "/";
 const getNoteIdRoute = apiNotesURL + "/getId"
 const removeNoteRoute = apiNotesURL + "/removeNote"
-const registerNoteRoute = apiNotesURL + "/registerNote"
+const registerNoteRoute = apiNotesURL + "/add"
 const updateNoteRoute = apiNotesURL + "/updateANote"
 const notifyUserRoute = apiNotesURL + "/notifyUser"
 const userNotificationsRoute = apiNotesURL + "/userNotifications"
@@ -9,12 +10,11 @@ const userNotificationsRoute = apiNotesURL + "/userNotifications"
 export default class NoteService {
 
   async getNoteId(prefix) {
-    const response = await fetch(getNoteIdRoute, {
-      method: 'POST',
+    const response = await fetch(getNoteIdRoute + `/${prefix}`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(prefix),
     });
     const data = await response.json();
     return data;
@@ -39,8 +39,8 @@ export default class NoteService {
       body: JSON.stringify(note),
     });
     console.log(warnedUser, note);
-    if (note.noteType === 'Warning') {
-      await this.warnUser({ dbWarningId: note.noteId, dbWarnedUserId: warnedUser.dbUserId });
+    if (note.type === "Warning") {
+      await this.warnUser({ warningID: note.id, warnedUser: warnedUser.id });
     }
   }
 
@@ -63,17 +63,17 @@ export default class NoteService {
       body: JSON.stringify(note),
     });
     if (note.noteType === 'Warning') {
-      await this.warnUser({ dbWarningId: note.noteId, dbWarnedUserId: warnedUser.dbUserId });
+      await this.warnUser({ warningID: note.noteId, warnedUser: warnedUser.dbUserId });
     }
   }
 
   async getNotesByCreatorId(userId) {
-    const response = await fetch('http://localhost:8000/api/notes/notes', {
-      method: 'POST',
+    const url = `${getAllNotesRoute}?creatorID=${userId}`;
+    const response = await fetch(url, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(userId.toString()),
     });
     return await response.json();
   }

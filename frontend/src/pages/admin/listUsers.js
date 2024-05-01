@@ -16,7 +16,7 @@ const ListUsers = () => {
 
   useEffect(() => {
     api.getDBUsers().then((dbUsers) => {
-      setValidates(dbUsers.users);
+      setValidates(dbUsers);
     });
   }, []);
 
