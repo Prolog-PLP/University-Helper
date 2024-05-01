@@ -29,7 +29,7 @@ const Warning = () => {
     console.log(noteID);
 
     await api.registerNote({
-      id: noteID.id,
+      id: noteID,
       type: "Warning",
       visibility: "Private",
       title: title,
