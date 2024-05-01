@@ -54,16 +54,16 @@ export default class NoteService {
   }
 
   async updateNote({ warnedUser, ...note }) {
-    await fetch(updateNoteRoute, {
-      method: 'POST',
+    await fetch(updateNoteRoute + `/${note.id}`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(note),
     });
-    if (note.noteType === 'Warning') {
-      await this.warnUser({ warningID: note.noteId, warnedUser: warnedUser.dbUserId });
-    }
+    //if (note.type === 'Warning') {
+    //  await this.warnUser({ warningID: note.id, warnedUser: warnedUser.id });
+    //}
   }
 
   async getNotesByCreatorId(userId) {

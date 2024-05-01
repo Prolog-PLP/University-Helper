@@ -56,11 +56,11 @@ get_notes_handler(Request) :-
     reply_json(json{notes: NotesJson}).
 
 update_note_handler(_, options, Request) :-
-    cors_enable(Request, [methods([options, post])]),
+    cors_enable(Request, [methods([options, patch])]),
     reply_json(true), !.
 
-update_note_handler(ID, post, Request) :-
-    cors_enable(Request, [methods([options, post])]),
+update_note_handler(ID, patch, Request) :-
+    cors_enable(Request, [methods([options, patch])]),
     atom_number(ID, UID),
     http_read_json_dict(Request, Note),
     update_note(UID, Note, Response),

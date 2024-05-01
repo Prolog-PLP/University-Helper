@@ -42,7 +42,9 @@ delete_notes(_, _, _, _, _, _, _, _, _, Response) :-
 
 update_note(ID, UpdatedNoteJson, Response) :-
     % I'm supposing that the Type will be inside the json
-    extract_note_data(UpdatedNoteJson, _, Type, Visibility, Title, Subject, Content, _, _, UpdatedAt),
+    extract_note_data(UpdatedNoteJson, _, Type, Visibility, Title, Subject, Content, _, _, _),
+    get_time(CurrentTime),
+    format_time(atom(UpdatedAt), '%d-%m-%Y %H:%M:%S', CurrentTime),
     update_note(ID, Type, Visibility, Title, Subject, Content, _, _, UpdatedAt),
     Response = json{success: true, message: 'Updated note(s) successfully.'}.
 
