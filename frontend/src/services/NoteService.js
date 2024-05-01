@@ -3,7 +3,7 @@ const getAllNotesRoute = apiNotesURL + "/";
 const getNoteIdRoute = apiNotesURL + "/getId"
 const removeNoteRoute = apiNotesURL + "/delete"
 const registerNoteRoute = apiNotesURL + "/add"
-const updateNoteRoute = apiNotesURL + "/updateANote"
+const updateNoteRoute = apiNotesURL + "/update"
 const notifyUserRoute = apiNotesURL + "/notifyUser"
 const userNotificationsRoute = apiNotesURL + "/userNotifications"
 
