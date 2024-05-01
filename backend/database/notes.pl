@@ -9,4 +9,3 @@ current_note_id(war, 0).
 next_note_id(A, B) :-
     current_note_id(A, C),
     B is C+1.
-

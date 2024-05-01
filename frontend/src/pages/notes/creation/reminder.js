@@ -18,7 +18,7 @@ const Reminder = () => {
 
     await api.registerNote({
       id: noteID,
-      noteType: "Reminder",
+      type: "Reminder",
       visibility: "Private",
       title: "",
       subject: "",
