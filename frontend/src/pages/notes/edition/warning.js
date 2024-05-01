@@ -20,7 +20,8 @@ const Warning = ({ note }) => {
       try {
         const users = await api.getDBUsers();
 
-        setDbUsersList(users);
+        const filteredUsersList = users.filter(user => user.email !== 'everton@admin.ufcg.edu.br');
+        setDbUsersList(filteredUsersList);
       } catch (error) {
         console.error('Error fetching users:', error);
       }

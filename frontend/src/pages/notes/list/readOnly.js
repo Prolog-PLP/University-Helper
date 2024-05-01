@@ -20,11 +20,8 @@ export default function ListNotesReadOnly({ warningsEnabled }) {
           jsonData = await api.getUserWarnings(dbUserSession.id);
         } else {
           const allNotes = await api.getNotes();
-          console.log(allNotes)
           jsonData = allNotes.filter(note => note.type !== "Warning" && note.visibility === "Public");
         }
-  
-        console.log(jsonData);
         setData(jsonData);
       } catch (error) {
         console.error('Error fetching notes:', error);

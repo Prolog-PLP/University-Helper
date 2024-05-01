@@ -14,10 +14,7 @@ import { useLocation } from 'react-router-dom';
 export default function EditNote() {
   const location = useLocation();
   const noteEditingNow = location.state.note;
-  console.log("Editing");
-  console.log(noteEditingNow);
   const [value, setValue] = React.useState(0);
-  console.log(value);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

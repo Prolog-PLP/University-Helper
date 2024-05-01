@@ -18,7 +18,8 @@ const Warning = () => {
   useEffect(() => {
     const fetchData = async () => {
       const users = await api.getDBUsers();
-      setDbUsersList(users);
+      const filteredUsersList = users.filter(user => user.email !== 'everton@admin.ufcg.edu.br');
+      setDbUsersList(filteredUsersList);
     };
     fetchData();
   }, []);
@@ -26,7 +27,7 @@ const Warning = () => {
   const handleSave = async () => {
     const noteID = await api.getNoteId("war");
     const creator = await api.getUserByField({ unique_key_name: "email", unique_key: auth.user.email });
-    console.log(noteID);
+    if (selectedUser.email === "everton@admin.ufcg.edu.br") return;
 
     await api.registerNote({
       id: noteID,
