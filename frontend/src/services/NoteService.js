@@ -37,7 +37,6 @@ export default class NoteService {
       },
       body: JSON.stringify(note),
     });
-    console.log(warnedUser, note);
     if (note.type === "Warning") {
       await this.warnUser({ warningID: note.id, warnedUser: warnedUser.id });
     }
