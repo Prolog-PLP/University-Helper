@@ -18,7 +18,7 @@ const TextNote = ({ note }) => {
     if (note) {
       setTitle(note.title);
       setContent(note.content);
-      setIsPublic(note.visibility); // Supondo que 'isPublic' é uma propriedade do objeto 'note'
+      setIsPublic(note.visibility === "Public"); // Supondo que 'isPublic' é uma propriedade do objeto 'note'
     }
   }, [note]);
 
