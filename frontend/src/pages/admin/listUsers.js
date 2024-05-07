@@ -108,7 +108,6 @@ const ListUsers = () => {
     })
       .then(response => response.json())
       .then(result => {
-        console.log(result);
         if (result.success) {
           setRows(prevRows => prevRows.filter(row => row.id !== id));
         }

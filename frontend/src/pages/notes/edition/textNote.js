@@ -11,13 +11,14 @@ const TextNote = ({ note }) => {
   const api = useApi();
   const navigate = useNavigate();
   const location = useLocation();
+  const isReadOnly = location.state?.readOnly ?? false;
 
   // Atualiza os estados quando o componente recebe uma nova 'note'
   useEffect(() => {
     if (note) {
       setTitle(note.title);
       setContent(note.content);
-      setIsPublic(note.isPublic); // Supondo que 'isPublic' é uma propriedade do objeto 'note'
+      setIsPublic(note.visibility === "Public"); // Supondo que 'isPublic' é uma propriedade do objeto 'note'
     }
   }, [note]);
 
@@ -40,7 +41,7 @@ const TextNote = ({ note }) => {
     <Container component="main" maxWidth='100%'>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography component="h1" variant="h5" style={{ marginBottom: '1rem' }}>
-          Editar Anotação
+          {isReadOnly ? "Visualizar Anotação" : "Editar Anotação"}
         </Typography>
         <form noValidate style={{ width: '100%' }}>
           <TextField
@@ -55,6 +56,7 @@ const TextNote = ({ note }) => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             style={{ marginBottom: '1rem' }}
+            disabled={isReadOnly}
           />
           <TextField
             variant="outlined"
@@ -69,6 +71,7 @@ const TextNote = ({ note }) => {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             style={{ marginBottom: '1rem' }}
+            disabled={isReadOnly}
           />
           <Grid container spacing={2}>
             <Grid item xs={6} container justifyContent="flex-start">
@@ -79,37 +82,40 @@ const TextNote = ({ note }) => {
                     onChange={(e) => setIsPublic(e.target.checked)}
                     name="isPublic"
                     color="primary"
+                    disabled={isReadOnly}
                   />
                 }
                 label="Público"
               />
             </Grid>
-            <Grid item xs={6} container justifyContent="flex-end">
-              <IconButton
-                type="button"
-                onClick={handleClear}
-                sx={{
-                  color: 'white',
-                  backgroundColor: 'error.main',
-                  '&:hover': {
-                    backgroundColor: 'error.dark',
-                  },
-                  borderRadius: '15%',
-                  marginTop: '1rem',
-                }}
-              >
-                <CleaningServicesIcon />
-              </IconButton>
-              <Button
-                type="button"
-                variant="contained"
-                color="primary"
-                onClick={handleSave}
-                sx={{ marginTop: '1rem', marginLeft: '1rem' }}
-              >
-                Salvar
-              </Button>
-            </Grid>
+            {!isReadOnly &&
+              <Grid item xs={6} container justifyContent="flex-end">
+                <IconButton
+                  type="button"
+                  onClick={handleClear}
+                  sx={{
+                    color: 'white',
+                    backgroundColor: 'error.main',
+                    '&:hover': {
+                      backgroundColor: 'error.dark',
+                    },
+                    borderRadius: '15%',
+                    marginTop: '1rem',
+                  }}
+                >
+                  <CleaningServicesIcon />
+                </IconButton>
+                <Button
+                  type="button"
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSave}
+                  sx={{ marginTop: '1rem', marginLeft: '1rem' }}
+                >
+                  Salvar
+                </Button>
+              </Grid>
+            }
           </Grid>
         </form>
       </div>

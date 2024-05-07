@@ -1,5 +1,3 @@
-import { capitalize } from "../utils/utils";
-
 const apiUsersURL = process.env.REACT_APP_API + "/users"
 const getAllUsersRoute = apiUsersURL + "/"
 const registerRoute = apiUsersURL + "/add";
@@ -7,8 +5,7 @@ const registerRoute = apiUsersURL + "/add";
 const getValidUsers = apiUsersURL + "/validated_users";
 const getUnvalidUsers = apiUsersURL + "/unvalidated_users";
 const updateUserRoute = apiUsersURL + "/update";
-const getUserFieldRoute = apiUsersURL + "/getAny";
-const getUserByFieldRoute = apiUsersURL + "/user";
+
 export default class UserService {
 
     async validateLogin(logInfoSubmission) {

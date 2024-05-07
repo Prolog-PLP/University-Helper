@@ -70,7 +70,6 @@ const User = () => {
   const handleRegister = async () => {
     try {
       const response = await api.registerUser(user);
-      console.log(response);
       if (!response.errors) {
         auth.login(user);
         navigate(redirectPath, { replace: true });
